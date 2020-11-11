@@ -17,7 +17,7 @@ export interface BurgerProps {
 const Burger: React.FunctionComponent<BurgerProps> = (props) => {
     const transformedIngridientes = Object.entries(props.ingredients);
 
-    const array_ = transformedIngridientes.map((ingridient, index) => {return  [...Array(ingridient[1])].map((_, i) => <BurgerIngridient key ={i} type={ingridient[0]}/>);});
+    const array_ = transformedIngridientes.map((ingridient, index) => {return  [...Array(ingridient[1])].map((_, i) => <BurgerIngridient key ={ingridient[0]+ingridient[1]+i+index} type={ingridient[0]}/>);});
   
     //const flaten = ([] as any).concat(...array_);
     const flaten = array_.flat();
