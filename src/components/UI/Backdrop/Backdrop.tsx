@@ -1,14 +1,14 @@
 import React from 'react';
+import classes from './Backdrop.module.css';
 
-export interface IBackdropProps {
+export interface BackdropProps {
+  show:any;
+  clicked:any;
 }
+ 
+const Backdrop: React.FunctionComponent<BackdropProps> = (props) => {
+  return (  props.show ? <div className={classes.Backdrop} onClick={props.clicked}></div>: null);
 
-export default class Backdrop extends React.Component<IBackdropProps> {
-  public render() {
-    return (
-      <div>
-        hello
-      </div>
-    );
-  }
 }
+ 
+export default Backdrop;

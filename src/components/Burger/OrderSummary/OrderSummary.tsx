@@ -1,8 +1,11 @@
 import React from 'react'
 import Auxiliary from '../../../hoc/Auxiliary';
+import Button from '../../UI/Button/Button';
 
 export interface OrderSummaryProps {
     ingredients:any;
+    purchasedCanceled: any;
+    purchasedContinue: any;
 }
  
 const OrderSummary: React.FunctionComponent<OrderSummaryProps> = (props) => {
@@ -21,6 +24,16 @@ const OrderSummary: React.FunctionComponent<OrderSummaryProps> = (props) => {
                 {list_checkout}
             </ul>
             <p>Continue to Checkout?</p>
+            
+            <Button 
+                btnType='Danger'
+                clicked={props.purchasedCanceled}
+            >Cancel</Button>
+
+            <Button 
+                btnType='Success'
+                clicked={props.purchasedContinue}
+                >Continue</Button>
         </Auxiliary>
 
      );
