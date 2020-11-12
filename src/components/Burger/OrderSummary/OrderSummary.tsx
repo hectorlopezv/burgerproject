@@ -6,6 +6,7 @@ export interface OrderSummaryProps {
     ingredients:any;
     purchasedCanceled: any;
     purchasedContinue: any;
+    price:any;
 }
  
 const OrderSummary: React.FunctionComponent<OrderSummaryProps> = (props) => {
@@ -24,7 +25,7 @@ const OrderSummary: React.FunctionComponent<OrderSummaryProps> = (props) => {
                 {list_checkout}
             </ul>
             <p>Continue to Checkout?</p>
-            
+            <p><strong>Total Price</strong>: {props.price.toFixed(2)}</p>
             <Button 
                 btnType='Danger'
                 clicked={props.purchasedCanceled}

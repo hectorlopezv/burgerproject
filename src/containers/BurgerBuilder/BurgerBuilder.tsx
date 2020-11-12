@@ -126,6 +126,7 @@ export default class BurgerBuilder extends Component<Props, State> {
                             ingredients={this.state.ingredients}
                             purchasedCanceled={this.purchaseCancelHandler}
                             purchasedContinue={this.purchaseContinueHandler}
+                            price={this.state.totalPrice}
                             />
                     </Modali>
                     <Burger ingredients={this.state.ingredients}/>

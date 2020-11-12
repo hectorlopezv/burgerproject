@@ -1,6 +1,7 @@
 import React from 'react';
 import Auxiliary from '../../hoc/Auxiliary';
 import classes from './Layout.module.css';
+import ToolBar from '../Navigation/ToolBar/ToolBar';
 
 export interface LayoutProps {
     
@@ -9,7 +10,7 @@ export interface LayoutProps {
 const Layout: React.FunctionComponent<LayoutProps> = (props) => {
     return ( 
         <Auxiliary>
-            <div>Toolbar, SideDrawer, Backdrop</div>
+            <ToolBar/>
             <main className={classes.Content}>
                 {props.children}
             </main>
