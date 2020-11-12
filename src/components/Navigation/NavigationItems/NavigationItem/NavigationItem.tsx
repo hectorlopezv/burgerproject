@@ -8,9 +8,10 @@ export interface NavigationItemProps {
 }
  
 const NavigationItem: React.FunctionComponent<NavigationItemProps> = (props) => {
+    const class_link = props.active? classes.active : 'null';
     return (  
         <li className={classes.NavigationItem}>
-            <a href={props.link} className={props.active? classes.active : null}>{props.children}</a>
+            <a href={props.link} className={class_link}>{props.children}</a>
         </li>
     );
 }
