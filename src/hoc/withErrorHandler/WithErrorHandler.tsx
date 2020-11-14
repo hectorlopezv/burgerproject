@@ -3,7 +3,7 @@ import Auxiliary from '../Auxiliary/Auxiliary';
 import Modal from '../../components/UI/Modali/Modali';
 
 //SEcond way to use HOC .... function that return a function....
-const WithErrorHandler = (WrappedComponent:any, axios:any) => {
+const withErrorHandler = (WrappedComponent:any, axios:any) => {
     console.log(WrappedComponent);
 
 
@@ -11,13 +11,21 @@ const WithErrorHandler = (WrappedComponent:any, axios:any) => {
         state = {
             error: null
         }
+        reqInterceptor: any;
+        resInterceptor: any;
 
-        componentDidMount () {
-            axios.interceptors.request.use((req:any) => {
+        componentWillUnmount(){
+            console.log('request unmounter');
+            axios.interceptors.request.reject(this.reqInterceptor);
+            axios.interceptors.response.reject(this.resInterceptor);
+        }
+
+        componentWillMount () {
+            this.reqInterceptor = axios.interceptors.request.use((req:any) => {
                 this.setState({error: null});
                 return req;
             });
-            axios.interceptors.response.use((res:any) => res, (error:any) => {
+            this.resInterceptor = axios.interceptors.response.use((res:any) => res, (error:any) => {
                 this.setState({error: error});
             });
         }
@@ -44,4 +52,4 @@ const WithErrorHandler = (WrappedComponent:any, axios:any) => {
 
 }
 
-export default WithErrorHandler;
+export default withErrorHandler;

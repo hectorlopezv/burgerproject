@@ -28,7 +28,7 @@ interface IObjectKeys {
 
 
   interface State {
-      ingredients: IDevice;
+      ingredients: IDevice | any;
       totalPrice: number;
       purcheseable:boolean;
       purchasing: boolean;
@@ -98,7 +98,13 @@ interface IObjectKeys {
         .then(response => {
             console.log(response);
             const {salad, bacon, meat, cheese} = response.data;
-            //this.setState({});
+            console.log(salad, bacon, cheese);
+            this.setState({ingredients:{
+                salad: salad,
+                cheese: cheese,
+                meat: meat,
+                bacon: bacon
+            }});
         })
         .catch(error => {
             console.log(error);
@@ -157,16 +163,39 @@ interface IObjectKeys {
         for (let key in disabledInfo) {
             disabledInfo[key] = disabledInfo[key] <=0;
         }
-        let orderSummary = <OrderSummary 
-                            ingredients={this.state.ingredients}
-                            purchasedCanceled={this.purchaseCancelHandler}
-                            purchasedContinue={this.purchaseContinueHandler}
-                            price={this.state.totalPrice}
-                            />
+        let orderSummary = null;
+        let burger = <Spinner/>;
+
+
+
+
+        
+        if(this.state.ingredients){
+            console.log('entro ')
+            burger = <Auxiliary>
+                <Burger ingredients={this.state.ingredients}/>
+                <BuildControls 
+                    ingridientAdded={this.addIngridientHandler}
+                    ingridientRemoved={this.removeIngridientHandler}
+                    disabledInfo={disabledInfo}
+                    price={this.state.totalPrice}
+                    purcheseable={this.state.purcheseable}
+                    ordered={this.purchaseHandler.bind(this)}
+                    />
+                </Auxiliary>
+            orderSummary = <OrderSummary 
+            ingredients={this.state.ingredients}
+            purchasedCanceled={this.purchaseCancelHandler}
+            purchasedContinue={this.purchaseContinueHandler}
+            price={this.state.totalPrice}
+            />
+    
+        }
+
         if(this.state.loading){
             orderSummary = <Spinner/>    
         }
-    
+
         
         return (
                 <Auxiliary>
@@ -176,15 +205,8 @@ interface IObjectKeys {
                     >
                         {orderSummary}
                     </Modali>
-                    <Burger ingredients={this.state.ingredients}/>
-                    <BuildControls 
-                        ingridientAdded={this.addIngridientHandler}
-                        ingridientRemoved={this.removeIngridientHandler}
-                        disabledInfo={disabledInfo}
-                        price={this.state.totalPrice}
-                        purcheseable={this.state.purcheseable}
-                        ordered={this.purchaseHandler.bind(this)}
-                    />
+                    {burger}
+                       
                 </Auxiliary>
         )
     }
