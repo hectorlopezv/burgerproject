@@ -6,7 +6,7 @@ import Backdrop from '../Backdrop/Backdrop';
 
 
 interface Props {
-    show: boolean;
+    show: boolean | any;
     modalClosed:any;
 }
 interface State {
@@ -20,7 +20,7 @@ export default class Modali extends Component<Props, State> {
 
     shouldComponentUpdate(nextProps:any, nextState:any){
             console.log('Modali component should Update');
-            return nextProps.show !== this.props.show;
+            return nextProps.show !== this.props.show || (this.props.children!== nextProps.children);
     }
 
     componentDidUpdate(){
