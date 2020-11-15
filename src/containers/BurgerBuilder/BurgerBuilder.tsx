@@ -8,7 +8,14 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import WithErrorHandler from '../../hoc/withErrorHandler/WithErrorHandler';
 
 import instance_orders from '../../axios-orders';
-
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link,
+    RouteProps,
+    RouteComponentProps
+  } from "react-router-dom";
 
 
 interface Props {
@@ -42,7 +49,7 @@ interface IObjectKeys {
       bacon: 0.7
   }
 
- class BurgerBuilder extends Component<Props, State> {
+ class BurgerBuilder extends Component<Props & RouteComponentProps, State > {
     
     
     state:State = {
@@ -114,7 +121,7 @@ interface IObjectKeys {
 
     purchaseContinueHandler = () =>{
         //Get info from the Burger
-        this.setState({loading:true});
+/*        this.setState({loading:true});
 
         const order_resume = {
             ingridients: this.state.ingredients,
@@ -135,7 +142,17 @@ interface IObjectKeys {
         instance_orders.post('/orders.json', order_resume)
         .then(response => {console.log(response); this.setState({loading:false, purchasing:false })} )
         .catch(error => {console.log(error); this.setState({loading:false, purchasing:false})} );
+        */
+        console.log('armando al quert', this.state.ingredients);
+        const queryParams = [];
+        for (let i in this.state.ingredients){
+            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]) + '&');
+        }
 
+        (this.props.history as any).push({
+            pathname: '/checkout',
+            search: '?' + queryParams.join('').slice(0, -1)
+        });
     }
 
 
