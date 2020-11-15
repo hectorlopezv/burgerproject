@@ -1,6 +1,8 @@
 
 import {withRouter} from 'react-router-dom';
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
+import {Route} from 'react-router-dom';
+import ContactData from './ContactData/ContactData';
 
 
 import React, { Component } from 'react'
@@ -43,6 +45,11 @@ class Checkout extends Component {
                         onCheckoutCancel={this.onCheckoutCancel}
                         checkoutContinue={this.checkoutContinue}
                     />
+
+                    <Route //Nested Routing
+                     path={this.props.match.path + '/contact-data'}
+                     component={ContactData}
+                     />
                 </div>
         )
     }
