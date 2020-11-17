@@ -28,16 +28,16 @@ class Checkout extends Component {
         const ingridients = {}
         for (let param of query.entries()) {
             //['salada' , 1]
-            if(param[0] === 'price'){
-                price = param[1];
-                continue
+            if (param[0] === 'price'){
+                price = +param[1];
             }
-            else {
+            else{
                 ingridients[param[0]] = +param[1];
             }
+
         }
 
-        console.log(ingridients);
+        console.log('el price', price);
         this.setState({ingredients: ingridients, totalPrice: price});
     }
 
