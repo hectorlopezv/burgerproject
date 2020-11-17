@@ -43,7 +43,7 @@ interface IObjectKeys {
   interface State {
       ingredients?: IDevice | any;
       totalPrice?: number;
-      purcheseable:boolean;
+      purcheseable?:boolean;
       purchasing: boolean;
       loading: boolean;
       error?: boolean;
@@ -60,7 +60,7 @@ interface IObjectKeys {
     
     
     state:State = {
-        purcheseable: false,
+        
         purchasing: false,
         loading: false
 
@@ -76,7 +76,8 @@ interface IObjectKeys {
         }
         const sum = Object.values(updatedIngridients);
         const total:any = sum.reduce((a, b)=> {return (a as number) + (b as number)});
-        this.setState({purcheseable: total > 0});
+       // this.setState({purcheseable: total > 0});
+       return total > 0;
     }
 
 
@@ -107,19 +108,8 @@ interface IObjectKeys {
 
 
     purchaseContinueHandler = () =>{
-
-        console.log('armando al quert', this.state.ingredients);
-        const queryParams = [];
-        for (let i in this.state.ingredients){
-            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]) + '&');
-        }
-
-        queryParams.push('price=' + this.state.totalPrice);
-
         (this.props.history as any).push({
-            pathname: '/checkout',
-            search: '?' + queryParams.join('').slice(0, -1)
-        });
+            pathname: '/checkout' });
     }
 
 
@@ -146,7 +136,7 @@ interface IObjectKeys {
                     ingridientRemoved={this.props.onIngredientRemoved}
                     disabledInfo={disabledInfo}
                     price={this.props.totalPrice}
-                    purcheseable={this.state.purcheseable}
+                    purcheseable={this.updatePurchaseState(this.props.ings)}
                     ordered={this.purchaseHandler.bind(this)}
                     />
                 </Auxiliary>

@@ -5,10 +5,12 @@ import instance_orders from '../../../axios-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import {withRouter, RouteComponentProps} from 'react-router-dom';
 import Input from '../../../components/UI/Input/Input';
+import {connect} from 'react-redux';
 
 export interface IContactDataProps {
   ingredients:any;
   price: any;
+  ings: any;
 }
 interface ArrStr {
   [key: string]: unknown|any; // Must accommodate all members
@@ -126,7 +128,7 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
 
   orderHandler = (event:any) => {
     event.preventDefault();
-    console.log(this.props);
+
       //Get info from the Burger
        this.setState({loading:true});
         const formData:ArrStr = {};
@@ -137,7 +139,7 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
 
 
         const order_resume = {
-            ingridients: this.props.ingredients,
+            ingridients: this.props.ings,
             price: this.props.price,
             orderData: formData
         }
@@ -219,4 +221,12 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
     );
   }
 }
-export default  withRouter(ContactData);
+
+const mapStateToProps = (state:any) => {
+    return {
+      ings: state.ingridients,
+      price: state.totalPrice
+    }
+}
+
+export default  connect(mapStateToProps)(withRouter(ContactData));
