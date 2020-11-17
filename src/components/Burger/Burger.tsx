@@ -15,14 +15,14 @@ export interface BurgerProps   {
 }
  
 const Burger: React.FunctionComponent<BurgerProps & RouteComponentProps>= (props) => {
-    console.log(props);
+    //ingridients
     const transformedIngridientes = Object.entries(props.ingredients);
 
     const array_ = transformedIngridientes.map((ingridient, index) => {return  [...Array(ingridient[1])].map((_, i) => <BurgerIngridient key ={ingridient[0]+ingridient[1]+i+index} type={ingridient[0]}/>);});
   
-    //const flaten = ([] as any).concat(...array_);
-    const flaten = array_.flat();
-    
+    const flaten = ([] as any).concat(...array_);
+ 
+    console.log(flaten);
     
 
     return (  

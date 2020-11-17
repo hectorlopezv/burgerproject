@@ -4,7 +4,7 @@ import Modal from '../../components/UI/Modali/Modali';
 
 //SEcond way to use HOC .... function that return a function....
 const withErrorHandler = (WrappedComponent:any, axios:any) => {
-    console.log(WrappedComponent);
+    //console.log(WrappedComponent);
 
 
     return class extends Component {

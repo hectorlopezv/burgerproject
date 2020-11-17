@@ -17,9 +17,15 @@ import {
     RouteComponentProps
   } from "react-router-dom";
 
+//redux importing
+import {connect} from 'react-redux';
+import * as actionTypes from '../../store/actions';
 
 interface Props {
-    
+    ings:any;
+    onIngredientAdded:any;
+    onIngredientRemoved: any;
+    totalPrice:any;
 }
 
 interface IObjectKeys {
@@ -35,11 +41,12 @@ interface IObjectKeys {
 
 
   interface State {
-      ingredients: IDevice | any;
-      totalPrice: number;
+      ingredients?: IDevice | any;
+      totalPrice?: number;
       purcheseable:boolean;
       purchasing: boolean;
       loading: boolean;
+      error?: boolean;
   }
 
   const INGRIDIENT_PRICES:IDevice = {
@@ -53,8 +60,6 @@ interface IObjectKeys {
     
     
     state:State = {
-        ingredients : null, 
-        totalPrice: 4,
         purcheseable: false,
         purchasing: false,
         loading: false
@@ -75,25 +80,7 @@ interface IObjectKeys {
     }
 
 
-    removeIngridientHandler = (type:string) => {
 
-        const oldCount = this.state.ingredients[type];
-
-        const updatedCount = oldCount >= 1 ? (oldCount as number) - 1 : 0;
-
-        const updatedIngridients = {...this.state.ingredients};//updating should making a copy
-
-        updatedIngridients[type] = updatedCount;
-        
-        const priceAddition = INGRIDIENT_PRICES[type];
-
-        const oldPrice = this.state.totalPrice;
-
-        const newPrice = oldPrice - (priceAddition as number);
-
-        this.setState({totalPrice: newPrice, ingredients: updatedIngridients})
-        this.updatePurchaseState(updatedIngridients);
-    }
 
     purchaseCancelHandler =() =>{
         this.setState({purchasing: false});    
@@ -101,21 +88,21 @@ interface IObjectKeys {
 
 
     componentDidMount(){
-        instance_orders.get('/ingridients.json')
-        .then(response => {
-            console.log(response);
-            const {salad, bacon, meat, cheese} = response.data;
-            console.log(salad, bacon, cheese);
-            this.setState({ingredients:{
-                salad: salad,
-                cheese: cheese,
-                meat: meat,
-                bacon: bacon
-            }});
-        })
-        .catch(error => {
-            console.log(error);
-        });
+        //instance_orders.get('/ingridients.json')
+        //.then(response => {
+         //   console.log(response);
+          //  const {salad, bacon, meat, cheese} = response.data;
+           // console.log(salad, bacon, cheese);
+            //this.setState({ingredients:{
+             //   salad: salad,
+              //  cheese: cheese,
+              ///  meat: meat,
+               // bacon: bacon
+            //}});
+        //})
+        //.catch(error => {
+         //   console.log(error);
+        //});
     }
 
 
@@ -136,55 +123,38 @@ interface IObjectKeys {
     }
 
 
-    addIngridientHandler = (type:string) => {
-        const oldCount = this.state.ingredients[type];
-        const updatedCount = (oldCount as number) + 1;
-
-        const updatedIngridients = {...this.state.ingredients};//updating should making a copy
-
-        updatedIngridients[type] = updatedCount;
-        
-        const priceAddition = INGRIDIENT_PRICES[type];
-
-        const oldPrice = this.state.totalPrice;
-
-        const newPrice = oldPrice + (priceAddition as number);
-
-        this.setState({totalPrice: newPrice, ingredients: updatedIngridients})
-        this.updatePurchaseState(updatedIngridients);
-
-    }
+  
 
     render() {
-        const disabledInfo = {...this.state.ingredients};
+        const disabledInfo = {...this.props.ings};
+        console.log(this.props.ings);
+
         for (let key in disabledInfo) {
             disabledInfo[key] = disabledInfo[key] <=0;
         }
+
+
         let orderSummary = null;
         let burger = <Spinner/>;
 
-
-
-
-        
-        if(this.state.ingredients){
+        if(this.props.ings){
             console.log('entro ')
             burger = <Auxiliary>
-                <Burger ingredients={this.state.ingredients}/>
+                <Burger ingredients={this.props.ings}/>
                 <BuildControls 
-                    ingridientAdded={this.addIngridientHandler}
-                    ingridientRemoved={this.removeIngridientHandler}
+                    ingridientAdded={this.props.onIngredientAdded}
+                    ingridientRemoved={this.props.onIngredientRemoved}
                     disabledInfo={disabledInfo}
-                    price={this.state.totalPrice}
+                    price={this.props.totalPrice}
                     purcheseable={this.state.purcheseable}
                     ordered={this.purchaseHandler.bind(this)}
                     />
                 </Auxiliary>
             orderSummary = <OrderSummary 
-            ingredients={this.state.ingredients}
+            ingredients={this.props.ings}
             purchasedCanceled={this.purchaseCancelHandler}
             purchasedContinue={this.purchaseContinueHandler}
-            price={this.state.totalPrice}
+            price={this.props.totalPrice}
             />
     
         }
@@ -210,4 +180,26 @@ interface IObjectKeys {
 }
 
 
-export default WithErrorHandler( BurgerBuilder, instance_orders );
+//disptachtoprops and statetoprops REDUX
+const mapStateToProps = (state:any) => {
+    //console.log(state);
+    return {
+        ings: state.ingridients,
+        totalPrice: state.totalPrice
+    }
+}
+
+const mapDispatchToProps = (dispatch:any) => {
+    return {
+        onIngredientAdded: (ingName:any) => dispatch({
+            type: actionTypes.ADD_INGRIDIENT, 
+            ingridientName:ingName
+        }),
+        onIngredientRemoved: (ingName:any) => dispatch({
+            type: actionTypes.REMOVE_INGRIDIENT, 
+            ingridientName:ingName
+        })
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(WithErrorHandler( BurgerBuilder, instance_orders ));
