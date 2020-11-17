@@ -120,34 +120,14 @@ interface IObjectKeys {
 
 
     purchaseContinueHandler = () =>{
-        //Get info from the Burger
-/*        this.setState({loading:true});
 
-        const order_resume = {
-            ingridients: this.state.ingredients,
-            price: this.state.totalPrice,
-            customer: {
-                name: "hectorcito andres",
-                address: {
-                    street: "Test street",
-                    zipCode: "0008100",
-                    country: "Colombia"
-                },
-                email: "test@test.com"
-            },
-            deliveryMethod: 'fastest'
-        }
-
-
-        instance_orders.post('/orders.json', order_resume)
-        .then(response => {console.log(response); this.setState({loading:false, purchasing:false })} )
-        .catch(error => {console.log(error); this.setState({loading:false, purchasing:false})} );
-        */
         console.log('armando al quert', this.state.ingredients);
         const queryParams = [];
         for (let i in this.state.ingredients){
             queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]) + '&');
         }
+
+        queryParams.push('price=' + this.state.totalPrice);
 
         (this.props.history as any).push({
             pathname: '/checkout',

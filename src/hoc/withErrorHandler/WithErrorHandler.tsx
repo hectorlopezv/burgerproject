@@ -8,6 +8,9 @@ const withErrorHandler = (WrappedComponent:any, axios:any) => {
 
 
     return class extends Component {
+        //si hay una peticion en accion y da error
+        // se activa axios y cambianmos el estado y bam
+        //mostramos el modal con un mensaje de error
         state = {
             error: null
         }

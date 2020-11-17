@@ -1,5 +1,5 @@
 
-import {withRouter} from 'react-router-dom';
+import {withRouter, RouteComponentProps} from 'react-router-dom';
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import {Route} from 'react-router-dom';
 import ContactData from './ContactData/ContactData';
@@ -9,13 +9,10 @@ import React, { Component } from 'react'
 
 class Checkout extends Component {
     state = {
-        ingredients: {
-            salad:1,
-            meat:1,
-            cheese:1,
-            bacon:1
-        }
+        ingredients: null,
+        totalPrice: 0
     }
+    
     onCheckoutCancel = () =>{
         this.props.history.goBack();
     }
@@ -23,18 +20,25 @@ class Checkout extends Component {
         this.props.history.replace('/checkout/contact-data');
     }
 
-    componentDidMount() {
+    componentWillMount() {
         console.log(this.props.location)
         const query = new URLSearchParams(this.props.location.search);
 
-
+        let price=0;
         const ingridients = {}
         for (let param of query.entries()) {
             //['salada' , 1]
-            ingridients[param[0]] = +param[1];
+            if(param[0] === 'price'){
+                price = param[1];
+                continue
+            }
+            else {
+                ingridients[param[0]] = +param[1];
+            }
         }
+
         console.log(ingridients);
-        this.setState({ingredients: ingridients});
+        this.setState({ingredients: ingridients, totalPrice: price});
     }
 
     render() {
@@ -48,7 +52,10 @@ class Checkout extends Component {
 
                     <Route //Nested Routing
                      path={this.props.match.path + '/contact-data'}
-                     component={ContactData}
+                     render={()=> (<ContactData
+                        ingredients={this.state.ingredients}
+                        price={this.state.totalPrice}
+                        />)}
                      />
                 </div>
         )
