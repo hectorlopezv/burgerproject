@@ -3,7 +3,11 @@
     padding: 10px;
     box-sizing: border-box;
 }
-
+.Invalid {
+    border: 1px solid red;
+    background-color: #FDA49A;
+    
+}
 .Label {
     font-weight: bold;
     display: block;

@@ -5,11 +5,13 @@ import classes from './Button.module.css';
 export interface ButtonProps {
     btnType:string;
     clicked?:any;
+    disabled?:any;
 }
  
 const Button: React.FunctionComponent<ButtonProps> = (props) => {
     return (  
         <button 
+            disabled={props.disabled}
             className={[classes.Button, classes[props.btnType]].join(' ')}
             onClick={props.clicked}
         >

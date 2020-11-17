@@ -26,7 +26,12 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
                 type: 'text',
                 placeholder: 'Your Name'
             },
-            value: 'Your Name'
+            value: '',
+            validation: {
+              required: true
+            },
+            valid:false,
+            touched: false
         },
         street: {
             elementType: 'input',
@@ -34,7 +39,12 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
                 type: 'text',
                 placeholder: 'Street'
             },
-            value: 'Your Street'
+            value: '',
+            validation: {
+              required: true
+            },
+            valid:false,
+            touched: false
         },
         zipCode: {
             elementType: 'input',
@@ -42,7 +52,14 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
                 type: 'text',
                 placeholder: 'ZIP Code'
             },
-            value: 'Your ZipCode'
+            value: '',
+            validation: {
+              required: true,
+              minLength: 5,
+              maxLength: 5
+            },
+            valid:false,
+            touched: false
         },
         country: {
             elementType: 'input',
@@ -50,7 +67,12 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
                 type: 'text',
                 placeholder: 'Country'
             },
-            value: 'Your Country'
+            value: '',
+            validation: {
+              required: true
+            },
+            valid:false,
+            touched: false
         },
         email: {
             elementType: 'input',
@@ -58,7 +80,12 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
                 type: 'email',
                 placeholder: 'Your E-Mail'
             },
-            value: 'Your Email'
+            value: '',
+            validation: {
+              required: true
+            },
+            valid:false,
+            touched: false
         },
         deliveryMethod: {
             elementType: 'select',
@@ -68,12 +95,34 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
                     {value: 'cheapest', displayValue: 'Cheapest'}
                 ]
             },
-            value: 'your Delivery Method'
+            value: '',
+            valid:true
         }
     },
-    loading: false
+    loading: false, 
+    formIsValid: false
 }
 
+  checkValidity = (value:any, rules:any) => {
+    //check validity and return boolean
+    //rules is validation object
+    let isValid = false;
+    if(!rules){
+      return true; 
+    }
+    if(rules.required){
+      isValid = value.trim() !== '';
+
+    }
+    //add rules neccessary
+    if (rules.minLength){
+      isValid = value.length >= rules.minLength && isValid;
+    }
+    if (rules.maxLength){
+      isValid = value.length <= rules.maxLength && isValid;
+    }
+    return isValid;
+  }
 
   orderHandler = (event:any) => {
     event.preventDefault();
@@ -109,10 +158,27 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
     const updatedFormElement = {...updatedOrderForm[inputIdentifier]};
     
     updatedFormElement.value = event.target.value;
-    updatedOrderForm[inputIdentifier] =  updatedFormElement;
-    this.setState({orderForm: updatedOrderForm});
+    updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+    updatedFormElement.touched = true;
     
+    updatedOrderForm[inputIdentifier] =  updatedFormElement;
+    console.log('element',updatedFormElement);
+    console.log('form',updatedOrderForm); 
+
+    let formIsValid = true;
+    //check all elements and if all valid property form its good to go
+    for (let inputIndetifier in updatedOrderForm){
+        formIsValid =  updatedOrderForm[inputIndetifier].valid && formIsValid;
+
+    }
+    console.log('el form', formIsValid);
+
+    this.setState((prevState:any)=>{
+        return {orderForm: updatedOrderForm, formIsValid: formIsValid};
+    })
+
   }
+
   render() {
     const formElementsArray = [];
     for (let key in this.state.orderForm){
@@ -129,14 +195,17 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
       formElementsArray.map((formElement:any) => {
           return <Input 
             key={formElement.id}
+            shouldValidate={formElement.config.validation}
+            invalid={!formElement.config.valid}
             elementType={formElement.config.elementType} 
             elementConfig={formElement.config.elementConfig}
             value={formElement.config.value}
+            touched={formElement.config.touched}
             changed={(event:any) => this.inputChangedHandler(event, formElement.id)}
           />
       })
     }     
-      <Button btnType="Success" >ORDER</Button>
+      <Button btnType="Success" disabled={!this.state.formIsValid} >ORDER</Button>
     </form>);
 
     if (this.state.loading){
