@@ -146,8 +146,7 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
 
         instance_orders.post('/orders.json', order_resume)
         .then(response => {
-          console.log(response); 
-          console.log(this.props);
+       
           this.setState({loading:false, purchasing:false })
           this.props.history.push('/')
         })
@@ -155,7 +154,7 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
   }
 
   inputChangedHandler = (event:any, inputIdentifier:any) => {
-    console.log(event.target.value);
+;
     const updatedOrderForm = {...this.state.orderForm}
     const updatedFormElement = {...updatedOrderForm[inputIdentifier]};
     
@@ -164,8 +163,7 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
     updatedFormElement.touched = true;
     
     updatedOrderForm[inputIdentifier] =  updatedFormElement;
-    console.log('element',updatedFormElement);
-    console.log('form',updatedOrderForm); 
+
 
     let formIsValid = true;
     //check all elements and if all valid property form its good to go
@@ -173,7 +171,7 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
         formIsValid =  updatedOrderForm[inputIndetifier].valid && formIsValid;
 
     }
-    console.log('el form', formIsValid);
+
 
     this.setState((prevState:any)=>{
         return {orderForm: updatedOrderForm, formIsValid: formIsValid};

@@ -7,9 +7,8 @@ const Input = (props) => {
 
     let inputElement = '';
     const inputClasses = ["inputElement"]
-    console.log(props);
+
     if (props.invalid && props.shouldValidate && props.touched) {
-        console.log('entro error')
         inputClasses.push("Invalid");
     }
 

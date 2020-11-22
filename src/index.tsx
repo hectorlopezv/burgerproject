@@ -5,10 +5,15 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {Provider} from 'react-redux';
 import {createStore} from 'redux';
-import reducer from './store/reducer';
+import reducer from './store/reducers/burgerBuilder';
+import thunk from 'redux-thunk';
 
+import { composeWithDevTools } from 'redux-devtools-extension';
+import { applyMiddleware } from '@reduxjs/toolkit';
 
-const store = createStore(reducer);
+const store = createStore(reducer, composeWithDevTools(
+  applyMiddleware(thunk),
+));
 
 
 ReactDOM.render(

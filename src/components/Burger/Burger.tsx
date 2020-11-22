@@ -22,7 +22,7 @@ const Burger: React.FunctionComponent<BurgerProps & RouteComponentProps>= (props
   
     const flaten = ([] as any).concat(...array_);
  
-    console.log(flaten);
+
     
 
     return (  

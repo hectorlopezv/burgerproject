@@ -18,8 +18,11 @@ export default class OrderSummary extends Component<Props, State> {
 
     //this could a fuinctional component using React.memo
     componentDidUpdate(){
-        console.log('OrderSummary Update Mounting');
+
     }
+
+
+    
     render() {
         const transformedIngridientes = Object.entries(this.props.ingredients);
         const list_checkout = transformedIngridientes.map((ingridient, index) => {

@@ -17,15 +17,21 @@ import {
     RouteComponentProps
   } from "react-router-dom";
 
+//actions burger builder
+import { addIngridient, removeIngridient, initIngridients} from '../../store/actions/burgerBuilder';
+
 //redux importing
 import {connect} from 'react-redux';
-import * as actionTypes from '../../store/actions';
+
+
 
 interface Props {
     ings:any;
     onIngredientAdded:any;
     onIngredientRemoved: any;
+    onInitIngredient: any;
     totalPrice:any;
+    error:any;
 }
 
 interface IObjectKeys {
@@ -45,7 +51,7 @@ interface IObjectKeys {
       totalPrice?: number;
       purcheseable?:boolean;
       purchasing: boolean;
-      loading: boolean;
+      loading?: boolean;
       error?: boolean;
   }
 
@@ -61,10 +67,13 @@ interface IObjectKeys {
     
     state:State = {
         
-        purchasing: false,
-        loading: false
-
+        purchasing: false, 
     }
+
+    componentDidMount(){
+        this.props.onInitIngredient()
+    }
+
     purchaseHandler(){
         this.setState({purchasing: true});
     }
@@ -88,23 +97,6 @@ interface IObjectKeys {
     }
 
 
-    componentDidMount(){
-        //instance_orders.get('/ingridients.json')
-        //.then(response => {
-         //   console.log(response);
-          //  const {salad, bacon, meat, cheese} = response.data;
-           // console.log(salad, bacon, cheese);
-            //this.setState({ingredients:{
-             //   salad: salad,
-              //  cheese: cheese,
-              ///  meat: meat,
-               // bacon: bacon
-            //}});
-        //})
-        //.catch(error => {
-         //   console.log(error);
-        //});
-    }
 
 
     purchaseContinueHandler = () =>{
@@ -125,7 +117,7 @@ interface IObjectKeys {
 
 
         let orderSummary = null;
-        let burger = <Spinner/>;
+        let burger = this.props.error ? <p>ingridients cant be loaded </p> : <Spinner/>;
 
         if(this.props.ings){
             console.log('entro ')
@@ -149,9 +141,6 @@ interface IObjectKeys {
     
         }
 
-        if(this.state.loading){
-            orderSummary = <Spinner/>    
-        }
 
         
         return (
@@ -175,20 +164,16 @@ const mapStateToProps = (state:any) => {
     //console.log(state);
     return {
         ings: state.ingridients,
-        totalPrice: state.totalPrice
+        totalPrice: state.totalPrice,
+        error: state.error
     }
 }
 
 const mapDispatchToProps = (dispatch:any) => {
     return {
-        onIngredientAdded: (ingName:any) => dispatch({
-            type: actionTypes.ADD_INGRIDIENT, 
-            ingridientName:ingName
-        }),
-        onIngredientRemoved: (ingName:any) => dispatch({
-            type: actionTypes.REMOVE_INGRIDIENT, 
-            ingridientName:ingName
-        })
+        onIngredientAdded: (ingName:any) => dispatch(addIngridient(ingName)),
+        onInitIngredient: () => dispatch(initIngridients()),
+        onIngredientRemoved: (ingName:any) => dispatch(removeIngridient(ingName))
     }
 }
 
