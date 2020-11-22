@@ -39,8 +39,14 @@ const reducer = (state = initialState, action) =>{
     if(action.type === actionTypes.SET_INGRIDIENTS){
         return {
             ...state,
-            ingridients: action.ingridients,
-            error: false
+            ingridients:{
+                salad: action.ingridients.salad,
+                bacon: action.ingridients.bacon,
+                cheese: action.ingridients.cheese,
+                meat: action.ingridients.meat
+            },
+            error: false,
+            totalPrice: 4
         }
     }
 

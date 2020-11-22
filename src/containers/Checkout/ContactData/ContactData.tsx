@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable no-labels */
+/* eslint-disable no-unused-labels */
 import React, { Component} from 'react';
 import Button from '../../../components/UI/Button/Button';
 import './ContactData.css';
@@ -6,11 +9,16 @@ import Spinner from '../../../components/UI/Spinner/Spinner';
 import {withRouter, RouteComponentProps} from 'react-router-dom';
 import Input from '../../../components/UI/Input/Input';
 import {connect} from 'react-redux';
+import withErrorHandler from '../../../hoc/withErrorHandler/WithErrorHandler';
+import {purchaseBurgerStart, purchaseBurger} from '../../../store/actions/order';
+
 
 export interface IContactDataProps {
   ingredients:any;
   price: any;
   ings: any;
+  onOrderBurger:any;
+  loading: any;
 }
 interface ArrStr {
   [key: string]: unknown|any; // Must accommodate all members
@@ -97,11 +105,11 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
                     {value: 'cheapest', displayValue: 'Cheapest'}
                 ]
             },
-            value: '',
+            value: 'fastest',
+            validation: {},
             valid:true
         }
     },
-    loading: false, 
     formIsValid: false
 }
 
@@ -129,8 +137,9 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
   orderHandler = (event:any) => {
     event.preventDefault();
 
+
+
       //Get info from the Burger
-       this.setState({loading:true});
         const formData:ArrStr = {};
 
         for (let formElementIdentifier in this.state.orderForm){
@@ -144,17 +153,10 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
             orderData: formData
         }
 
-        instance_orders.post('/orders.json', order_resume)
-        .then(response => {
-       
-          this.setState({loading:false, purchasing:false })
-          this.props.history.push('/')
-        })
-        .catch(error => {console.log(error); this.setState({loading:false, purchasing:false})} );     
+       this.props.onOrderBurger(order_resume);
   }
 
   inputChangedHandler = (event:any, inputIdentifier:any) => {
-;
     const updatedOrderForm = {...this.state.orderForm}
     const updatedFormElement = {...updatedOrderForm[inputIdentifier]};
     
@@ -208,7 +210,7 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
       <Button btnType="Success" disabled={!this.state.formIsValid} >ORDER</Button>
     </form>);
 
-    if (this.state.loading){
+    if (this.props.loading){
       form = <Spinner/>
     }
     return (
@@ -222,9 +224,18 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
 
 const mapStateToProps = (state:any) => {
     return {
-      ings: state.ingridients,
-      price: state.totalPrice
+      ings: state.burgerBuilder.ingridients,
+      price: state.burgerBuilder.totalPrice,
+      loading: state.order.loading
     }
 }
 
-export default  connect(mapStateToProps)(withRouter(ContactData));
+const mapDispatchToProps = (dispatch:any) => {
+
+  return {
+    onOrderBurger: (orderData:any) =>  dispatch(purchaseBurger(orderData))
+  }
+  
+}
+
+export default  connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(withRouter(ContactData), instance_orders));

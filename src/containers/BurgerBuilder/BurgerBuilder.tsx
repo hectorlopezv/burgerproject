@@ -19,6 +19,7 @@ import {
 
 //actions burger builder
 import { addIngridient, removeIngridient, initIngridients} from '../../store/actions/burgerBuilder';
+import {purchaseInit} from '../../store/actions/order';
 
 //redux importing
 import {connect} from 'react-redux';
@@ -32,6 +33,7 @@ interface Props {
     onInitIngredient: any;
     totalPrice:any;
     error:any;
+    onInitPurchase:any;
 }
 
 interface IObjectKeys {
@@ -100,6 +102,7 @@ interface IObjectKeys {
 
 
     purchaseContinueHandler = () =>{
+        this.props.onInitPurchase();
         (this.props.history as any).push({
             pathname: '/checkout' });
     }
@@ -163,9 +166,9 @@ interface IObjectKeys {
 const mapStateToProps = (state:any) => {
     //console.log(state);
     return {
-        ings: state.ingridients,
-        totalPrice: state.totalPrice,
-        error: state.error
+        ings: state.burgerBuilder.ingridients,
+        totalPrice: state.burgerBuilder.totalPrice,
+        error: state.burgerBuilder.error
     }
 }
 
@@ -173,7 +176,8 @@ const mapDispatchToProps = (dispatch:any) => {
     return {
         onIngredientAdded: (ingName:any) => dispatch(addIngridient(ingName)),
         onInitIngredient: () => dispatch(initIngridients()),
-        onIngredientRemoved: (ingName:any) => dispatch(removeIngridient(ingName))
+        onIngredientRemoved: (ingName:any) => dispatch(removeIngridient(ingName)),
+        onInitPurchase: () => dispatch(purchaseInit())
     }
 }
 

@@ -5,13 +5,21 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {Provider} from 'react-redux';
 import {createStore} from 'redux';
-import reducer from './store/reducers/burgerBuilder';
+import burgerReducer from './store/reducers/burgerBuilder';
 import thunk from 'redux-thunk';
 
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { applyMiddleware } from '@reduxjs/toolkit';
+import { applyMiddleware, combineReducers } from '@reduxjs/toolkit';
+import { orderReducer } from './store/reducers/order';
 
-const store = createStore(reducer, composeWithDevTools(
+
+const rootReducer = combineReducers({
+  burgerBuilder: burgerReducer, 
+  order: orderReducer
+  }
+  );
+
+const store = createStore(rootReducer, composeWithDevTools(
   applyMiddleware(thunk),
 ));
 
