@@ -4,10 +4,13 @@ import Button from '../../components/UI/Button/Button';
 import classes from './Auth.module.css';
 import {connect} from 'react-redux';
 import * as actions from '../../store/actions/auth';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 
 export interface IAuthProps {
     onAuth:any; 
+    loading:any;
+    error:any;
 }
 interface ArrStr {
     [key: string]: unknown|any; // Must accommodate all members
@@ -115,7 +118,7 @@ checkValidity = (value:any, rules:any) => {
             });
         }
 
-        const form = formElementsArray.map((formElement:any) => {
+        let form:any = formElementsArray.map((formElement:any) => {
            return  <Input
                 key={formElement.id}
                 shouldValidate={formElement.config.validation}
@@ -127,9 +130,21 @@ checkValidity = (value:any, rules:any) => {
                 changed={(event:any) => this.inputChangedHandler(event, formElement.id)}
             />
         });
+
+
+        if(this.props.loading) {
+            form = <Spinner/>;
+        }
+        let errorMessage = null;
+
+        if (this.props.error){
+            errorMessage = <p>{this.props.error.message}</p>
+        }
+
     return (
       <div className= {classes.Auth}>
         <form onSubmit={this.submitHandler}>
+            {errorMessage}
             {form}
             <Button
                 btnType="Success" 
@@ -156,7 +171,12 @@ checkValidity = (value:any, rules:any) => {
 
 
 const mapStateToProps = (state:any) => {
+    return{
 
+        loading: state.auth.loading,
+        error: state.auth.error
+    }
+    
 }
 
 const mapDispatchToProps = (dispatch:any) => {
@@ -166,4 +186,4 @@ const mapDispatchToProps = (dispatch:any) => {
 }
 
 
-export default connect(null, mapDispatchToProps)(Auth);
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);
