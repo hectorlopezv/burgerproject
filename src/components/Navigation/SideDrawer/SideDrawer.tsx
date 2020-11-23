@@ -9,6 +9,7 @@ import classes from './SideDrawer.module.css';
 export interface SideDrawerProps {
     closed:any;
     open:any;
+    isAuth:any;
 }
  
 const SideDrawer: React.FunctionComponent<SideDrawerProps> = (props) => {
@@ -21,7 +22,9 @@ const SideDrawer: React.FunctionComponent<SideDrawerProps> = (props) => {
             <div className={class_css}>
                 <Logo height="11%"/>
                 <nav>
-                    <NavigationItems />
+                <NavigationItems  
+                    isAuth={props.isAuth}
+                />
                 </nav>
             </div>
         </Auxiliary>

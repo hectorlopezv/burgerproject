@@ -22,10 +22,10 @@ export const purchaseBurgerStart = () => {
     }
 }
 
-export const purchaseBurger= (orderData) => {
+export const purchaseBurger= (orderData, token) => {
     return dispatch => {
         dispatch(purchaseBurgerStart())
-        instance.post('/orders.json', orderData)
+        instance.post('/orders.json?auth=' + token, orderData)
         .then(response => {
             dispatch(purchaseBurgerSuccess(response.data, orderData));
         })
@@ -64,12 +64,12 @@ export const fetchOrdersStart = () => {
 }
 
 
-export const fetchOrders = () => {
+export const fetchOrders = (token) => {
     
     
     return dispatch => {
         dispatch(fetchOrdersStart());
-        instance.get('/orders.json')
+        instance.get('/orders.json?auth=' + token)
         .then(response => {
             const fetchedOrders = [];
             for (let key in response.data){

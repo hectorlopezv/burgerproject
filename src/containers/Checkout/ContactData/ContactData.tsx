@@ -19,6 +19,7 @@ export interface IContactDataProps {
   ings: any;
   onOrderBurger:any;
   loading: any;
+  token:any;
 }
 interface ArrStr {
   [key: string]: unknown|any; // Must accommodate all members
@@ -153,7 +154,7 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
             orderData: formData
         }
 
-       this.props.onOrderBurger(order_resume);
+       this.props.onOrderBurger(order_resume, this.props.token);
   }
 
   inputChangedHandler = (event:any, inputIdentifier:any) => {
@@ -226,14 +227,15 @@ const mapStateToProps = (state:any) => {
     return {
       ings: state.burgerBuilder.ingridients,
       price: state.burgerBuilder.totalPrice,
-      loading: state.order.loading
+      loading: state.order.loading,
+      token: state.auth.token
     }
 }
 
 const mapDispatchToProps = (dispatch:any) => {
 
   return {
-    onOrderBurger: (orderData:any) =>  dispatch(purchaseBurger(orderData))
+    onOrderBurger: (orderData:any, token:any) =>  dispatch(purchaseBurger(orderData, token))
   }
   
 }

@@ -6,6 +6,7 @@ import DraweToogle from '../SideDrawer/DrawerToogle/DrawerToogle';
 
 export interface ToolBarProps {
     open:any;
+    isAuth:any;
 }
  
 const ToolBar: React.FunctionComponent<ToolBarProps> = (props) => {
@@ -15,7 +16,9 @@ const ToolBar: React.FunctionComponent<ToolBarProps> = (props) => {
             <DraweToogle clicked={props.open}/>
             <Logo height="80%"/>
             <nav className={classes.DesktopOnly}>
-                <NavigationItems/>
+            <NavigationItems
+                isAuth={props.isAuth}
+            />
             </nav>
         </header>
     );
