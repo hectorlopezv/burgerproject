@@ -8,6 +8,20 @@ export const authStart = () => {
 };
 
 
+export const logout = () => {
+    return {
+        type: actionTypes.AUTH_LOGOUT
+    }
+}
+
+export const checkAuthTimeout = (expirationTime) => {
+    return dispatch => {
+        setTimeout(() => {
+            dispatch(logout());
+        }, expirationTime);
+
+    }
+}
 
 export const authSuccess = (authData) => {
     console.log(authData);
@@ -46,6 +60,7 @@ export const auth = (email, password, isSignup) => {
         axios.post(url, authData)
         .then((response)=>{
             dispatch(authSuccess(response.data));
+            dispatch(checkAuthTimeout(response.data.expiresIn));
         })
         .catch(err => {
             console.log(err);

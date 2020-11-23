@@ -20,6 +20,16 @@ export const authReducer = (state = initialState, action) => {
         }
     }
 
+    //LogOut
+    if(actionTypes.AUTH_LOGOUT === action.type){
+        return {
+            ...state,
+            token:null,
+            userId:null,
+        }
+    }
+    
+
     if(actionTypes.AUTH_SUCCESS === action.type){
         return {
             ...state,
