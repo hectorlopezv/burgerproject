@@ -1,0 +1,169 @@
+import React , { Component} from 'react';
+import Input from '../../components/UI/Input/Input';
+import Button from '../../components/UI/Button/Button';
+import classes from './Auth.module.css';
+import {connect} from 'react-redux';
+import * as actions from '../../store/actions/auth';
+
+
+export interface IAuthProps {
+    onAuth:any; 
+}
+interface ArrStr {
+    [key: string]: unknown|any; // Must accommodate all members
+  
+    [index: number]: unknown|any; // Can be a subset of string indexer
+    isSignup: boolean;
+  
+  }
+ class Auth extends Component<IAuthProps> {
+    state:ArrStr = {   
+        controls: {
+
+            email: {
+                elementType: 'input',//HTML type and config
+                elementConfig: {
+                    type: 'email',
+                    placeholder: 'Mail Address'
+                },
+                value: '',
+                validation: {
+                  required: true,
+                  isEmail: true
+                },
+                valid:false,
+                touched: false
+            },
+            password: {
+                elementType: 'input',//HTML type and config
+                elementConfig: {
+                    type: 'password',
+                    placeholder: 'Password'
+                },
+                value: '',
+                validation: {
+                  required: true,
+                  minLength: 6
+                },
+                valid:false,
+                touched: false
+            },
+            
+        },
+        isSignup: true
+    }
+
+
+  switchAuthModelHandler = () =>  {
+    this.setState((prevState:ArrStr) => {
+        return {isSignup: !prevState.isSignup}
+    })
+  }
+
+
+checkValidity = (value:any, rules:any) => {
+    //check validity and return boolean
+    //rules is validation object
+    let isValid = false;
+    if(!rules){
+      return true; 
+    }
+    if(rules.required){
+      isValid = value.trim() !== '';
+
+    }
+    //add rules neccessary
+    if (rules.minLength){
+      isValid = value.length >= rules.minLength && isValid;
+    }
+    if (rules.maxLength){
+      isValid = value.length <= rules.maxLength && isValid;
+    }
+    return isValid;
+  }
+
+  submitHandler = (event:any) => {
+      event.preventDefault();
+
+    this.props.onAuth(this.state.controls.email.value, this.state.controls.password.value, this.state.isSignup);
+
+  }
+
+
+  inputChangedHandler = (event:any, controlName:any) => {
+    const updatedControls = {
+        ...this.state.controls,
+        [controlName]:{
+            ...this.state.controls[controlName],
+            value: event.target.value,
+            valid: this.checkValidity(event.target.value, this.state.controls[controlName].validation),
+            touched: true
+        }
+    }
+    this.setState({controls: updatedControls});
+
+  }
+
+
+    public render() {
+
+        const formElementsArray = [];
+        for (let key in this.state.controls){
+            formElementsArray.push({
+              id:key,
+              config: this.state.controls[key]
+            });
+        }
+
+        const form = formElementsArray.map((formElement:any) => {
+           return  <Input
+                key={formElement.id}
+                shouldValidate={formElement.config.validation}
+                invalid={!formElement.config.valid}
+                elementType={formElement.config.elementType} 
+                elementConfig={formElement.config.elementConfig}
+                value={formElement.config.value}
+                touched={formElement.config.touched}
+                changed={(event:any) => this.inputChangedHandler(event, formElement.id)}
+            />
+        });
+    return (
+      <div className= {classes.Auth}>
+        <form onSubmit={this.submitHandler}>
+            {form}
+            <Button
+                btnType="Success" 
+            >
+                Login
+            </Button>
+        
+        </form>
+
+        <Button
+                btnType="Danger" 
+                clicked={this.switchAuthModelHandler}
+            >
+                 {this.state.isSignup? 'SIGNIN': 'SIGNUP'}
+            </Button>
+      </div>
+    );
+  }
+
+
+
+
+}
+
+
+const mapStateToProps = (state:any) => {
+
+}
+
+const mapDispatchToProps = (dispatch:any) => {
+    return  {
+        onAuth: (email:any, password:any, siging:any) => dispatch(actions.auth(email, password, siging))
+    }
+}
+
+
+export default connect(null, mapDispatchToProps)(Auth);

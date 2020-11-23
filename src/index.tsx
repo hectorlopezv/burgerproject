@@ -11,11 +11,12 @@ import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { applyMiddleware, combineReducers } from '@reduxjs/toolkit';
 import { orderReducer } from './store/reducers/order';
-
+import { authReducer } from './store/reducers/auth';
 
 const rootReducer = combineReducers({
   burgerBuilder: burgerReducer, 
-  order: orderReducer
+  order: orderReducer,
+  auth: authReducer
   }
   );
 
