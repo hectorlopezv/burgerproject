@@ -5,12 +5,17 @@ import classes from './Auth.module.css';
 import {connect} from 'react-redux';
 import * as actions from '../../store/actions/auth';
 import Spinner from '../../components/UI/Spinner/Spinner';
+import { Redirect} from 'react-router-dom';
 
 
 export interface IAuthProps {
     onAuth:any; 
     loading:any;
     error:any;
+    isAuthenticated:any;
+    authRedirectPath:any; 
+    onSetAuthRedirectPath:any;
+    buildingBurger:any;
 }
 interface ArrStr {
     [key: string]: unknown|any; // Must accommodate all members
@@ -55,6 +60,13 @@ interface ArrStr {
         },
         isSignup: true
     }
+
+  componentDidMount() {
+    console.log(this.props.buildingBurger , this.props.authRedirectPath)
+      if(this.props.buildingBurger && this.props.authRedirectPath){
+        this.props.onSetAuthRedirectPath();
+      }
+  }
 
 
   switchAuthModelHandler = () =>  {
@@ -109,7 +121,11 @@ checkValidity = (value:any, rules:any) => {
 
 
     public render() {
-
+        let authRedirect = null;
+        if(this.props.isAuthenticated){
+          console.log(this.props.authRedirectPath)
+          return <Redirect to={this.props.authRedirectPath}/>
+        }
         const formElementsArray = [];
         for (let key in this.state.controls){
             formElementsArray.push({
@@ -142,6 +158,8 @@ checkValidity = (value:any, rules:any) => {
         }
 
     return (
+      <>
+      {authRedirect}
       <div className= {classes.Auth}>
         <form onSubmit={this.submitHandler}>
             {errorMessage}
@@ -161,6 +179,7 @@ checkValidity = (value:any, rules:any) => {
                  {this.state.isSignup? 'SIGNIN': 'SIGNUP'}
             </Button>
       </div>
+      </>
     );
   }
 
@@ -174,14 +193,18 @@ const mapStateToProps = (state:any) => {
     return{
 
         loading: state.auth.loading,
-        error: state.auth.error
+        error: state.auth.error,
+        isAuthenticated: state.auth.token !== null,
+        buildingBurger: state.burgerBuilder.building,
+        authRedirectPath: state.auth.authRedirectPath
     }
     
 }
 
 const mapDispatchToProps = (dispatch:any) => {
     return  {
-        onAuth: (email:any, password:any, siging:any) => dispatch(actions.auth(email, password, siging))
+        onAuth: (email:any, password:any, siging:any) => dispatch(actions.auth(email, password, siging)),
+        onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/checkout'))
     }
 }
 

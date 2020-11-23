@@ -12,15 +12,22 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { applyMiddleware, combineReducers } from '@reduxjs/toolkit';
 import { orderReducer } from './store/reducers/order';
 import { authReducer } from './store/reducers/auth';
+import {
+  BrowserRouter as Router,
 
+} from "react-router-dom";
 const rootReducer = combineReducers({
   burgerBuilder: burgerReducer, 
   order: orderReducer,
   auth: authReducer
   }
   );
+const composeEnchancers = composeWithDevTools({
+  trace: true,
+  traceLimit: 25
+});
 
-const store = createStore(rootReducer, composeWithDevTools(
+const store = createStore(rootReducer, composeEnchancers(
   applyMiddleware(thunk),
 ));
 
@@ -29,7 +36,9 @@ ReactDOM.render(
   <Provider store={store}>
 
       <React.StrictMode>
-    <App />
+    <Router>    
+      <App />
+    </Router>
   </React.StrictMode>
   </Provider>
 ,

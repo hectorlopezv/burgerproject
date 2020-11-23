@@ -20,6 +20,7 @@ export interface IContactDataProps {
   onOrderBurger:any;
   loading: any;
   token:any;
+  userId:any;
 }
 interface ArrStr {
   [key: string]: unknown|any; // Must accommodate all members
@@ -151,7 +152,8 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
         const order_resume = {
             ingridients: this.props.ings,
             price: this.props.price,
-            orderData: formData
+            orderData: formData,
+            userId:this.props.userId
         }
 
        this.props.onOrderBurger(order_resume, this.props.token);
@@ -228,7 +230,8 @@ const mapStateToProps = (state:any) => {
       ings: state.burgerBuilder.ingridients,
       price: state.burgerBuilder.totalPrice,
       loading: state.order.loading,
-      token: state.auth.token
+      token: state.auth.token,
+      userId: state.auth.userId
     }
 }
 

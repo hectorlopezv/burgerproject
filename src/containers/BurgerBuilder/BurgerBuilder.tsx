@@ -20,6 +20,7 @@ import {
 //actions burger builder
 import { addIngridient, removeIngridient, initIngridients} from '../../store/actions/burgerBuilder';
 import {purchaseInit} from '../../store/actions/order';
+import {setAuthRedirectPath} from '../../store/actions/auth';
 
 //redux importing
 import {connect} from 'react-redux';
@@ -33,7 +34,10 @@ interface Props {
     onInitIngredient: any;
     totalPrice:any;
     error:any;
+    isAuthenticated:any;
     onInitPurchase:any;
+    onSetAuthRedirectPath:any;
+    children: React.ReactNode;
 }
 
 interface IObjectKeys {
@@ -77,7 +81,18 @@ interface IObjectKeys {
     }
 
     purchaseHandler(){
-        this.setState({purchasing: true});
+        
+        if(this.props.isAuthenticated){
+            //purchasing only if authenticated
+            this.setState({purchasing: true});
+        }
+        else {
+            //redirect to checkout if user authenticates when using burgerbuilder!
+            this.props.onSetAuthRedirectPath('/checkout');
+            
+            this.props.history.push('/auth');
+        }
+
     }
     
     updatePurchaseState(updatedIngridients:any){
@@ -95,6 +110,8 @@ interface IObjectKeys {
 
 
     purchaseCancelHandler =() =>{
+
+      
         this.setState({purchasing: false});    
     }
 
@@ -133,6 +150,7 @@ interface IObjectKeys {
                     price={this.props.totalPrice}
                     purcheseable={this.updatePurchaseState(this.props.ings)}
                     ordered={this.purchaseHandler.bind(this)}
+                    isAuth = {this.props.isAuthenticated}
                     />
                 </Auxiliary>
             orderSummary = <OrderSummary 
@@ -168,7 +186,8 @@ const mapStateToProps = (state:any) => {
     return {
         ings: state.burgerBuilder.ingridients,
         totalPrice: state.burgerBuilder.totalPrice,
-        error: state.burgerBuilder.error
+        error: state.burgerBuilder.error,
+        isAuthenticated: state.auth.token !== null
     }
 }
 
@@ -177,7 +196,8 @@ const mapDispatchToProps = (dispatch:any) => {
         onIngredientAdded: (ingName:any) => dispatch(addIngridient(ingName)),
         onInitIngredient: () => dispatch(initIngridients()),
         onIngredientRemoved: (ingName:any) => dispatch(removeIngridient(ingName)),
-        onInitPurchase: () => dispatch(purchaseInit())
+        onInitPurchase: () => dispatch(purchaseInit()),
+        onSetAuthRedirectPath: (path:any) => dispatch(setAuthRedirectPath(path))
     }
 }
 

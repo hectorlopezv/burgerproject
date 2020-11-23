@@ -10,6 +10,7 @@ export interface BuildControlsProps {
     disabledInfo:any;
     price: number;
     purcheseable:boolean;
+    isAuth:any;
 }
  const controls = [
      {label: 'Salad', type: 'salad'},
@@ -31,11 +32,18 @@ const BuildControls: React.FunctionComponent<BuildControlsProps> = (props) => {
                         disabledInfoType={props.disabledInfo[control.type]}
                         />    
                 })}
+         
+         
+         
          <button 
             className={classes.OrderButton} 
             disabled={!props.purcheseable}
             onClick={props.ordered}
-         >Order Now</button>
+         >
+            {props.isAuth?'ORDER NOW':'Signup'}
+        </button>
+        
+        
         </div>
         );
     }

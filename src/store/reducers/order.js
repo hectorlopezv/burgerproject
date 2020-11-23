@@ -65,6 +65,12 @@ if(action.type === actionTypes.FETCH_ORDERS_SUCCESS){
     }
 }
 
+if(action.type === actionTypes.SET_AUTH_REDIRECT_PATH){
+    return {
+        ...state,
+        authRedirectPath:action.path
+    }
+}
 
     
 

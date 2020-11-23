@@ -9,27 +9,33 @@ export const authStart = () => {
 
 
 export const logout = () => {
+    window.localStorage.removeItem('token');
+    window.localStorage.removeItem('expirationTime');
+    window.localStorage.removeItem('userId');
+    
     return {
         type: actionTypes.AUTH_LOGOUT
     }
 }
 
 export const checkAuthTimeout = (expirationTime) => {
+    console.log('ek tiempo', expirationTime);
     return dispatch => {
         setTimeout(() => {
             dispatch(logout());
-        }, expirationTime * 200);
+        }, expirationTime * 10000);
 
     }
 }
 
 export const authSuccess = (authData) => {
-    console.log(authData);
+    
     return {
         type: actionTypes.AUTH_SUCCESS,
         authData: authData,
         idToken: authData.idToken,
         userId: authData.localId,
+        path: '/'
         
     }
 };
@@ -59,7 +65,14 @@ export const auth = (email, password, isSignup) => {
 
         axios.post(url, authData)
         .then((response)=>{
+            const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000);
+
+            window.localStorage.setItem('token', response.data.idToken);
+            window.localStorage.setItem('expirationDate', expirationDate);
+            window.localStorage.setItem('userId', response.data.localId);
+
             dispatch(authSuccess(response.data));
+            dispatch(setAuthRedirectPath('/'));
             dispatch(checkAuthTimeout(response.data.expiresIn));
         })
         .catch(err => {
@@ -71,5 +84,32 @@ export const auth = (email, password, isSignup) => {
 }
 
 
+export const setAuthRedirectPath = (path) => {
+    return{
+        type: actionTypes.SET_AUTH_REDIRECT_PATH,
+        path: path
+    }
+}
+
+export const authCheckState = () => {
+    console.log('AUTH');
+    return dispatch => {
+        const token = window.localStorage.getItem('token');
+        console.log(token);
+        if(!token) {
+            dispatch(logout());
+        }else{
+            const expirationDate = new Date(window.localStorage.getItem('expirationDate'));
+            console.log(expirationDate);
+            console.log(new Date());
+
+            const token = window.localStorage.getItem('token');
+                const userId = localStorage.getItem('userId');
+                dispatch(authSuccess(token, userId));   
+                dispatch(checkAuthTimeout( new Date().getSeconds() - expirationDate.getSeconds() ));  
 
 
+            
+        }
+    }
+}
