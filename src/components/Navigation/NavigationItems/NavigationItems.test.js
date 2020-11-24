@@ -19,6 +19,14 @@ describe('<NavigationItems /> Test', () => {
         //actual unit testing logic
         const wrapper =  shallow(<NavigationItems />);
         expect(wrapper.find(NavigatiomItem)).toHaveLength(2);
-    })
+    });
+
+    it('should render Three <NavigatiomItem/> elements if authenticated', () => {
+        //actual unit testing logic
+        const wrapper =  shallow(<NavigationItems isAuth />);
+        expect(wrapper.find(NavigatiomItem)).toHaveLength(3);
+    });
+
+
     
 })
