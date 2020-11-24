@@ -19,7 +19,7 @@ const SideDrawer: React.FunctionComponent<SideDrawerProps> = (props) => {
     return (  
         <Auxiliary>
             <Backdrop show={props.open} clicked={props.closed}/>
-            <div className={class_css}>
+            <div className={class_css} onClick={props.closed}>
                 <Logo height="11%"/>
                 <nav>
                 <NavigationItems  
