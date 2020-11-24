@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../store/actions/auth';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import { Redirect} from 'react-router-dom';
+import {checkValidity} from '../../shared/utility';
 
 
 export interface IAuthProps {
@@ -62,7 +63,7 @@ interface ArrStr {
     }
 
   componentDidMount() {
-    console.log(this.props.buildingBurger , this.props.authRedirectPath)
+
       if(this.props.buildingBurger && this.props.authRedirectPath){
         this.props.onSetAuthRedirectPath();
       }
@@ -76,26 +77,6 @@ interface ArrStr {
   }
 
 
-checkValidity = (value:any, rules:any) => {
-    //check validity and return boolean
-    //rules is validation object
-    let isValid = false;
-    if(!rules){
-      return true; 
-    }
-    if(rules.required){
-      isValid = value.trim() !== '';
-
-    }
-    //add rules neccessary
-    if (rules.minLength){
-      isValid = value.length >= rules.minLength && isValid;
-    }
-    if (rules.maxLength){
-      isValid = value.length <= rules.maxLength && isValid;
-    }
-    return isValid;
-  }
 
   submitHandler = (event:any) => {
       event.preventDefault();
@@ -111,7 +92,7 @@ checkValidity = (value:any, rules:any) => {
         [controlName]:{
             ...this.state.controls[controlName],
             value: event.target.value,
-            valid: this.checkValidity(event.target.value, this.state.controls[controlName].validation),
+            valid: checkValidity(event.target.value, this.state.controls[controlName].validation),
             touched: true
         }
     }
@@ -123,7 +104,7 @@ checkValidity = (value:any, rules:any) => {
     public render() {
         let authRedirect = null;
         if(this.props.isAuthenticated){
-          console.log(this.props.authRedirectPath)
+
           return <Redirect to={this.props.authRedirectPath}/>
         }
         const formElementsArray = [];

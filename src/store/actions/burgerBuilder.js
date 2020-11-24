@@ -37,7 +37,6 @@ export const initIngridients = () => {
     return dispatch => {
         instance.get('https://burgerbuilder-80b74.firebaseio.com/ingridients.json')
         .then(response =>{
-            console.log(response);
             dispatch(setIngridients(response.data));
         })
         .catch(err =>{

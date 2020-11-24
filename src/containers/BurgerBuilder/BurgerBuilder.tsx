@@ -129,7 +129,7 @@ interface IObjectKeys {
 
     render() {
         const disabledInfo = {...this.props.ings};
-        console.log(this.props.ings);
+        
 
         for (let key in disabledInfo) {
             disabledInfo[key] = disabledInfo[key] <=0;
@@ -140,7 +140,7 @@ interface IObjectKeys {
         let burger = this.props.error ? <p>ingridients cant be loaded </p> : <Spinner/>;
 
         if(this.props.ings){
-            console.log('entro ')
+        
             burger = <Auxiliary>
                 <Burger ingredients={this.props.ings}/>
                 <BuildControls 
@@ -182,7 +182,7 @@ interface IObjectKeys {
 
 //disptachtoprops and statetoprops REDUX
 const mapStateToProps = (state:any) => {
-    //console.log(state);
+    
     return {
         ings: state.burgerBuilder.ingridients,
         totalPrice: state.burgerBuilder.totalPrice,

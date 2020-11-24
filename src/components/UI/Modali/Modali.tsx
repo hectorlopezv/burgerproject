@@ -19,12 +19,12 @@ export default class Modali extends Component<Props, State> {
 
 
     shouldComponentUpdate(nextProps:any, nextState:any){
-            console.log('Modali component should Update');
+           
             return nextProps.show !== this.props.show || (this.props.children!== nextProps.children);
     }
 
     componentDidUpdate(){
-        console.log('Modali Update Mounting');
+        
     }
 
     render() {

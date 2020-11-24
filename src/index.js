@@ -26,10 +26,18 @@ const composeEnchancers = composeWithDevTools({
   trace: true,
   traceLimit: 25
 });
+let store;
 
-const store = createStore(rootReducer, composeEnchancers(
+if (process.env.NODE_ENV === 'development'){
+
+   store = createStore(rootReducer, composeEnchancers(
   applyMiddleware(thunk),
 ));
+
+}
+else{
+  store = createStore(rootReducer, applyMiddleware(thunk));
+}
 
 
 ReactDOM.render(

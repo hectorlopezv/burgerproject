@@ -36,9 +36,9 @@ class App extends Component {
         <Redirect to="/"/>
        </Switch>
     );
-      console.log(this.props.isAuthenticated)
+
     if (this.props.isAuthenticated) {
-      console.log('deberia entrara aca')
+
       routes = (
 
         <Switch>

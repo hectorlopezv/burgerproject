@@ -19,7 +19,7 @@ export const logout = () => {
 }
 
 export const checkAuthTimeout = (expirationTime) => {
-    console.log('ek tiempo', expirationTime);
+  
     return dispatch => {
         setTimeout(() => {
             dispatch(logout());
@@ -76,7 +76,7 @@ export const auth = (email, password, isSignup) => {
             dispatch(checkAuthTimeout(response.data.expiresIn));
         })
         .catch(err => {
-            console.log(err);
+        
             dispatch(authFail(err.response.data.error))
         })
 
@@ -92,16 +92,15 @@ export const setAuthRedirectPath = (path) => {
 }
 
 export const authCheckState = () => {
-    console.log('AUTH');
+
     return dispatch => {
         const token = window.localStorage.getItem('token');
-        console.log(token);
-        if(!token) {
+       if(!token) {
             dispatch(logout());
         }else{
             const expirationDate = new Date(window.localStorage.getItem('expirationDate'));
-            console.log(expirationDate);
-            console.log(new Date());
+      
+
 
             const token = window.localStorage.getItem('token');
                 const userId = localStorage.getItem('userId');

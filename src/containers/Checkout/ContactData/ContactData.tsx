@@ -11,6 +11,7 @@ import Input from '../../../components/UI/Input/Input';
 import {connect} from 'react-redux';
 import withErrorHandler from '../../../hoc/withErrorHandler/WithErrorHandler';
 import {purchaseBurgerStart, purchaseBurger} from '../../../store/actions/order';
+import {checkValidity} from '../../../shared/utility';
 
 
 export interface IContactDataProps {
@@ -115,26 +116,9 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
     formIsValid: false
 }
 
-  checkValidity = (value:any, rules:any) => {
-    //check validity and return boolean
-    //rules is validation object
-    let isValid = false;
-    if(!rules){
-      return true; 
-    }
-    if(rules.required){
-      isValid = value.trim() !== '';
 
-    }
-    //add rules neccessary
-    if (rules.minLength){
-      isValid = value.length >= rules.minLength && isValid;
-    }
-    if (rules.maxLength){
-      isValid = value.length <= rules.maxLength && isValid;
-    }
-    return isValid;
-  }
+
+
 
   orderHandler = (event:any) => {
     event.preventDefault();
@@ -164,7 +148,7 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
     const updatedFormElement = {...updatedOrderForm[inputIdentifier]};
     
     updatedFormElement.value = event.target.value;
-    updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+    updatedFormElement.valid = checkValidity(updatedFormElement.value, updatedFormElement.validation);
     updatedFormElement.touched = true;
     
     updatedOrderForm[inputIdentifier] =  updatedFormElement;
