@@ -19,15 +19,13 @@ export const logout = () => {
     }
 }
 
-export const checkAuthTimeout = (expirationTime) => {
-  
-    return dispatch => {
-        setTimeout(() => {
-            dispatch(logout());
-        }, expirationTime * 10000);
-
+export const logoutSucced = () => {
+    return{
+        type: actionTypes.AUTH_LOGOUT//execute that action
     }
 }
+
+
 
 export const authSuccess = (authData) => {
     
@@ -48,6 +46,17 @@ export const authFail = (error) => {
         error: error
     };
 };
+
+
+
+export const checkAuthTimeout = (expirationTime) => {
+  
+    return {
+        type: actionTypes.AUTH_CHECK_TIMEOUT,
+        expirationTime: expirationTime
+    }
+}
+
 
 export const auth = (email, password, isSignup) => {
     return dispatch => {
