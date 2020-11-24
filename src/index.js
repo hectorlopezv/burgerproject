@@ -16,6 +16,13 @@ import {
   BrowserRouter as Router,
 
 } from "react-router-dom";
+
+//we need need to register Our saga
+import createSagaMiddleware from 'redux-saga';
+
+import { watchAuth } from './store/sagas/index';
+
+const sagaMiddleware = createSagaMiddleware();
 const rootReducer = combineReducers({
   burgerBuilder: burgerReducer, 
   order: orderReducer,
@@ -31,14 +38,16 @@ let store;
 if (process.env.NODE_ENV === 'development'){
 
    store = createStore(rootReducer, composeEnchancers(
-  applyMiddleware(thunk),
+  applyMiddleware(thunk, sagaMiddleware),
 ));
 
 }
 else{
-  store = createStore(rootReducer, applyMiddleware(thunk));
+  store = createStore(rootReducer, applyMiddleware(thunk, sagaMiddleware));
 }
 
+//run saga Watcher to set Event listeners...
+sagaMiddleware.run(watchAuth);
 
 ReactDOM.render(
   <Provider store={store}>
