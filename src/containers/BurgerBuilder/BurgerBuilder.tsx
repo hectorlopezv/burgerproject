@@ -68,7 +68,7 @@ interface IObjectKeys {
       bacon: 0.7
   }
 
- class BurgerBuilder extends Component<Props & RouteComponentProps, State > {
+ export class BurgerBuilder extends Component<Props & RouteComponentProps, State > {
     
     
     state:State = {
