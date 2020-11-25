@@ -12,9 +12,13 @@ import axios from 'axios';
 
 //A generator
 export function* logoutSaga (action) {
-    yield window.localStorage.removeItem('token');
-    yield window.localStorage.removeItem('expirationTime');
-    yield window.localStorage.removeItem('userId');
+    //make generator testeable
+    //make testeable your code easier by mocking it easier
+    //windows.localstorage.removeItem('token');
+    yield call([window.localStorage, 'removeItem'], 'token');
+    yield call([window.localStorage, 'removeItem'], 'expirationTime');
+    yield call([window.localStorage, 'removeItem'], 'userId');
+
     yield put(logoutSucced());
 }
 
