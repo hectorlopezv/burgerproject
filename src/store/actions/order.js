@@ -22,19 +22,7 @@ export const purchaseBurgerStart = () => {
     }
 }
 
-export const purchaseBurger= (orderData, token) => {
-    return dispatch => {
-        dispatch(purchaseBurgerStart())
-        instance.post('/orders.json?auth=' + token, orderData)
-        .then(response => {
-            dispatch(purchaseBurgerSuccess(response.data, orderData));
-        })
-        .catch(error => {
-            dispatch(purchaseBurgerFail(error));
-            console.log(error);
-        });     
-    }
-}
+
 
 export const purchaseInit = () =>{
     return {
@@ -63,28 +51,21 @@ export const fetchOrdersStart = () => {
     }
 }
 
+export const purchaseBurger= (orderData, token) => {
+    return {
+        type: actionTypes.PURCHASE_BURGER,
+        orderData: orderData,
+        token: token
+    }  
+    
+}
 
 export const fetchOrders = (token, userId) => {
     
-    
-    return dispatch => {
-        dispatch(fetchOrdersStart());
-        const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"';
-  
-        instance.get('/orders.json' + queryParams)
-        .then(response => {
-            const fetchedOrders = [];
-            for (let key in response.data){
-                fetchedOrders.push({
-                    ...response.data[key],//info del objecto
-                    id:key//key del objecto
-                });
-            }
-            dispatch(fetchOrdersSuccess(fetchedOrders));
-        })
-        .catch(error => {
-            dispatch(fetchOrdersFail(error));
-        });
+    return  {
+        type: actionTypes.FETCH_ORDER_INIT,
+        token: token,
+        userId: userId
 
     }
     

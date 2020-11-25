@@ -1,5 +1,4 @@
 import { call, put, takeEvery, takeLatest, delay } from 'redux-saga/effects'
-import * as actionTypes from '../actions/actionTypes';
 import { 
     logoutSucced, 
     logout, 

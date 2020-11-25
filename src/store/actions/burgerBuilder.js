@@ -1,5 +1,4 @@
 import * as actionTypes from './actionTypes';
-import instance from '../../axios-orders';
 
 export const addIngridient = (name) =>{
     return {
@@ -34,14 +33,7 @@ export const setIngridients = (ingridients) =>{
 
 //async action creators
 export const initIngridients = () => {
-    return dispatch => {
-        instance.get('https://burgerbuilder-80b74.firebaseio.com/ingridients.json')
-        .then(response =>{
-            dispatch(setIngridients(response.data));
-        })
-        .catch(err =>{
-            dispatch(fetchIngridientsFailed());
-        });
-
+    return {
+        type: actionTypes.INIT_INGRIDIENT
     }
 }
