@@ -53,5 +53,17 @@ export function* authSaga (action){
     }
 }
 
-
+export function* authCheckState(action){
+        
+    const token = yield window.localStorage.getItem('token');
+       if(!token) {
+          yield  put(logout());
+        }else{
+            const expirationDate = yield new Date(window.localStorage.getItem('expirationDate'));
+            const token = yield window.localStorage.getItem('token');
+            const userId = yield localStorage.getItem('userId');
+            yield put(authSuccess(token, userId));   
+            yield put(checkAuthTimeout( new Date().getSeconds() - expirationDate.getSeconds() ));  
+        }
+}
 

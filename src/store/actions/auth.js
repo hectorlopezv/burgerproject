@@ -1,5 +1,4 @@
 import * as actionTypes from './actionTypes';
-import axios from 'axios';
 
 export const authStart = () => {
     return {
@@ -9,11 +8,6 @@ export const authStart = () => {
 
 
 export const logout = () => {
-    //window.localStorage.removeItem('token');
-    //window.localStorage.removeItem('expirationTime');
-    //window.localStorage.removeItem('userId');
-    
-    //handle wit redux saga TO RUN SAGA FUNCTION generator
     return {
         type: actionTypes.AUTH_INITIATE_LOGOUT
     }
@@ -78,23 +72,8 @@ export const setAuthRedirectPath = (path) => {
 }
 
 export const authCheckState = () => {
-
-    return dispatch => {
-        const token = window.localStorage.getItem('token');
-       if(!token) {
-           dispatch(logout());
-        }else{
-            const expirationDate = new Date(window.localStorage.getItem('expirationDate'));
-      
-
-
-            const token = window.localStorage.getItem('token');
-                const userId = localStorage.getItem('userId');
-                dispatch(authSuccess(token, userId));   
-                dispatch(checkAuthTimeout( new Date().getSeconds() - expirationDate.getSeconds() ));  
-
-
-            
-        }
+    return {
+        type: actionTypes.AUTH_CHECK_STATE
     }
+
 }

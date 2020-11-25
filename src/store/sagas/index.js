@@ -1,7 +1,7 @@
 //listen to certain acttions and do something when they occur
 import {takeEvery} from 'redux-saga/effects';
 import * as actionTypes from '../actions/actionTypes';
-import {logoutSaga, checkAuthTimeoutSaga, authSaga } from './auth';
+import {logoutSaga, checkAuthTimeoutSaga, authSaga, authCheckState } from './auth';
 
 
 export function* watchAuth(){
@@ -9,5 +9,7 @@ export function* watchAuth(){
     yield takeEvery(actionTypes.AUTH_INITIATE_LOGOUT, logoutSaga);
     yield takeEvery(actionTypes.AUTH_CHECK_TIMEOUT, checkAuthTimeoutSaga);
     yield takeEvery(actionTypes.AUTH_USER, authSaga);
+    yield takeEvery(actionTypes.AUTH_CHECK_STATE, authCheckState);
+
 }
 
