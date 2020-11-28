@@ -4,44 +4,28 @@ import Auxiliary from '../../../hoc/Auxiliary/Auxiliary';
 import Backdrop from '../Backdrop/Backdrop';
 
 
-
-interface Props {
+interface IModaliProps {    
     show: boolean | any;
     modalClosed:any;
-}
-interface State {
-    
+    children: React.ReactNode;
 }
 
-export default class Modali extends Component<Props, State> {
-    state = {}
+const Modali: React.FunctionComponent<IModaliProps> = (props) => {
     
+    return (  
+        <Auxiliary>
+            <Backdrop show={props.show} clicked={props.modalClosed}/>
+            <div className={classes.Modal}
+                style={{transform: props.show ? 'translateY(0)': 'translateY(-100vh)',
+                        opacity: props.show ? '1': '0'    
+            }}
+            >
+                {props.children}
+            </div>
+        </Auxiliary>
+    );
+};
 
-
-    shouldComponentUpdate(nextProps:any, nextState:any){
-           
-            return nextProps.show !== this.props.show || (this.props.children!== nextProps.children);
-    }
-
-    componentDidUpdate(){
-        
-    }
-
-    render() {
-        return (  
-            <Auxiliary>
-                <Backdrop show={this.props.show} clicked={this.props.modalClosed}/>
-                <div className={classes.Modal}
-                    style={{transform: this.props.show ? 'translateY(0)': 'translateY(-100vh)',
-                            opacity: this.props.show ? '1': '0'    
-                }}
-                >
-                    {this.props.children}
-                </div>
-            </Auxiliary>
-    
-        );
-    }
-}
+export default React.memo(Modali, (prevProps:any, nextProps:any) => nextProps.show === prevProps.show && (prevProps.children === nextProps.children) );
 
 
