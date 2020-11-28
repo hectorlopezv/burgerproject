@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable no-labels */
 /* eslint-disable no-unused-labels */
-import React, { Component} from 'react';
+import React, { Component, useState} from 'react';
 import Button from '../../../components/UI/Button/Button';
 import './ContactData.css';
 import instance_orders from '../../../axios-orders';
@@ -14,7 +14,7 @@ import {purchaseBurgerStart, purchaseBurger} from '../../../store/actions/order'
 import {checkValidity} from '../../../shared/utility';
 
 
-export interface IContactDataProps {
+interface IContactDataProps {
   ingredients:any;
   price: any;
   ings: any;
@@ -23,16 +23,16 @@ export interface IContactDataProps {
   token:any;
   userId:any;
 }
+
 interface ArrStr {
   [key: string]: unknown|any; // Must accommodate all members
 
   [index: number]: unknown|any; // Can be a subset of string indexer
 
 }
-class ContactData extends Component<IContactDataProps&RouteComponentProps> {
 
-  state : ArrStr= {
-    orderForm: {//config for each  data
+const x :ArrStr ={
+  orderForm: {//config for each  data
         name: {
             elementType: 'input',//HTML type and config
             elementConfig: {
@@ -112,39 +112,38 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
             validation: {},
             valid:true
         }
-    },
-    formIsValid: false
+    }
 }
 
 
+const ContactData: React.FunctionComponent<IContactDataProps&RouteComponentProps> = (props) => {
+  const [ContactData, setContactData] = useState({...x});
+  const [FormIsValid, setFormIsValid] = useState(false);
 
-
-
-  orderHandler = (event:any) => {
+  const orderHandler = (event:any) => {
     event.preventDefault();
 
+    //Get info from the Burger
+      const formData:ArrStr = {};
+
+      for (let formElementIdentifier in ContactData.orderForm){
+        formData[formElementIdentifier] = ContactData.orderForm[formElementIdentifier].value;
+      }
 
 
-      //Get info from the Burger
-        const formData:ArrStr = {};
+      const order_resume = {
+          ingridients: props.ings,
+          price: props.price,
+          orderData: formData,
+          userId:props.userId
+      }
 
-        for (let formElementIdentifier in this.state.orderForm){
-          formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
-        }
-
-
-        const order_resume = {
-            ingridients: this.props.ings,
-            price: this.props.price,
-            orderData: formData,
-            userId:this.props.userId
-        }
-
-       this.props.onOrderBurger(order_resume, this.props.token);
+      props.onOrderBurger(order_resume, props.token);
   }
 
-  inputChangedHandler = (event:any, inputIdentifier:any) => {
-    const updatedOrderForm = {...this.state.orderForm}
+
+  const inputChangedHandler = (event:any, inputIdentifier:any) => {
+    const updatedOrderForm = {...ContactData.orderForm}
     const updatedFormElement = {...updatedOrderForm[inputIdentifier]};
     
     updatedFormElement.value = event.target.value;
@@ -161,53 +160,54 @@ class ContactData extends Component<IContactDataProps&RouteComponentProps> {
 
     }
 
+    setContactData((prevState:any)=>{
+        return {orderForm: updatedOrderForm};
+    });
+    setFormIsValid(formIsValid);
+  }
 
-    this.setState((prevState:any)=>{
-        return {orderForm: updatedOrderForm, formIsValid: formIsValid};
+  const formElementsArray = [];
+  for (let key in ContactData.orderForm){
+      formElementsArray.push({
+        id:key,
+        config: ContactData.orderForm[key]
+      });
+  }
+
+  let form = ( 
+  <form onSubmit={orderHandler}>
+
+    {
+    formElementsArray.map((formElement:any) => {
+        return <Input 
+          key={formElement.id}
+          shouldValidate={formElement.config.validation}
+          invalid={!formElement.config.valid}
+          elementType={formElement.config.elementType} 
+          elementConfig={formElement.config.elementConfig}
+          value={formElement.config.value}
+          touched={formElement.config.touched}
+          changed={(event:any) => inputChangedHandler(event, formElement.id)}
+        />
     })
+  }     
+    <Button btnType="Success" disabled={!FormIsValid} >ORDER</Button>
+  </form>);
 
+  if (props.loading){
+    form = <Spinner/>
   }
 
-  render() {
-    const formElementsArray = [];
-    for (let key in this.state.orderForm){
-        formElementsArray.push({
-          id:key,
-          config: this.state.orderForm[key]
-        });
-    }
 
-    let form = ( 
-    <form onSubmit={this.orderHandler}>
+  return (
+    <div className="ContactData">
+      <h4>Enter your Contact Data</h4>
+       {form}
+    </div>
+  );
+};
 
-      {
-      formElementsArray.map((formElement:any) => {
-          return <Input 
-            key={formElement.id}
-            shouldValidate={formElement.config.validation}
-            invalid={!formElement.config.valid}
-            elementType={formElement.config.elementType} 
-            elementConfig={formElement.config.elementConfig}
-            value={formElement.config.value}
-            touched={formElement.config.touched}
-            changed={(event:any) => this.inputChangedHandler(event, formElement.id)}
-          />
-      })
-    }     
-      <Button btnType="Success" disabled={!this.state.formIsValid} >ORDER</Button>
-    </form>);
 
-    if (this.props.loading){
-      form = <Spinner/>
-    }
-    return (
-      <div className="ContactData">
-        <h4>Enter your Contact Data</h4>
-         {form}
-      </div>
-    );
-  }
-}
 
 const mapStateToProps = (state:any) => {
     return {

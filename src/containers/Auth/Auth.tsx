@@ -104,7 +104,7 @@ interface ArrStr {
     public render() {
         let authRedirect = null;
         if(this.props.isAuthenticated){
-
+            console.log('esto es el redirect', this.props.authRedirectPath);
           return <Redirect to={this.props.authRedirectPath}/>
         }
         const formElementsArray = [];

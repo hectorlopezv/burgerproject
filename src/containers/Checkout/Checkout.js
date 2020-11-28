@@ -8,43 +8,38 @@ import {connect} from 'react-redux';
 import React, { Component } from 'react'
 import * as action from '../../store/actions/order';
 
-class Checkout extends Component {
+
+const Checkout = (props) => {
+    const onCheckoutCancel = () =>{
+        props.history.goBack();
+    }
     
-    onCheckoutCancel = () =>{
-        this.props.history.goBack();
-    }
-    checkoutContinue = () =>{
-        this.props.history.replace('/checkout/contact-data');
+    const checkoutContinue = () =>{
+        props.history.replace('/checkout/contact-data');
     }
 
- 
-
-    render() {
-
-        let summary = <Redirect to="/"/>;
-        if (this.props.ings){
-            const purchasedRedirect = this.props.purchased ? <Redirect to="/"/>:null;
-            summary = ( 
-            <div>
-                {purchasedRedirect}
-                <CheckoutSummary
-                    ingredients={this.props.ings}
-                    onCheckoutCancel={this.onCheckoutCancel}
-                    checkoutContinue={this.checkoutContinue}
-                />
-                <Route //Nested Routing
-                    path={this.props.match.path + '/contact-data'}
-                    component={ContactData}
-                />
-            </div>);
-        }
-        return (
-                    summary
-        )
+    let summary = <Redirect to="/"/>;
+    if (props.ings){
+        const purchasedRedirect = props.purchased ? <Redirect to="/"/>:null;
+        summary = ( 
+        <div>
+            {purchasedRedirect}
+            <CheckoutSummary
+                ingredients={props.ings}
+                onCheckoutCancel={onCheckoutCancel}
+                checkoutContinue={checkoutContinue}
+            />
+            <Route //Nested Routing
+                path={props.match.path + '/contact-data'}
+                component={ContactData}
+            />
+        </div>);
     }
+    return (
+            summary
+    )
 }
-
-
+ 
 const mapStateToProps = state => {
     return {//we only read the props..... no updates
         ings: state.burgerBuilder.ingridients,
