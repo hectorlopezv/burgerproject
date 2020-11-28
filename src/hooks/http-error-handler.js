@@ -10,7 +10,7 @@ const reqInterceptor = httpClient.interceptors.request.use((req) => {
     return req;
 });
 
-const resInterceptor = httpClient.interceptors.response.use((res) => res, (error:any) => {
+const resInterceptor = httpClient.interceptors.response.use((res) => res, (error) => {
 
     setError(error.message);
 });
