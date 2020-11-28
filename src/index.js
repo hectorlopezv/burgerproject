@@ -23,7 +23,7 @@ import createSagaMiddleware from 'redux-saga';
 import { watchAuth } from './store/sagas/index';
 
 const sagaMiddleware = createSagaMiddleware();
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   burgerBuilder: burgerReducer, 
   order: orderReducer,
   auth: authReducer
