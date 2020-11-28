@@ -1,4 +1,4 @@
-import React,  { Component, useEffect} from 'react';
+import React,  { Component, useEffect, Suspense} from 'react';
 import Layout from './hoc/Layout/Layout';
 import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -7,7 +7,7 @@ import './App.css';
 import Logout from './containers/Auth/Logout/Logout';
 import {connect} from 'react-redux';
 import * as actions from './store/actions/auth';
-import asyncComponent from './hoc/asyncComponent/asyncComponent';
+
 import {
 
   Switch,
@@ -17,15 +17,15 @@ import {
 } from "react-router-dom";
 
 //Lazy Loading
-const asynCheckout = asyncComponent(()=>{
+const Checkout = React.lazy(()=>{
   return import('./containers/Checkout/Checkout')
 });
 
-const asynOrder = asyncComponent(()=>{
+const Order = React.lazy(()=>{
   return import('./containers/Orders/Orders')
 });
 
-const asynAuth = asyncComponent(()=>{
+const Auth = React.lazy(()=>{
   return import('./containers/Auth/Auth')
 });
 
@@ -37,7 +37,7 @@ const App = (props) => {
 
   let routes = (
     <Switch>
-    <Route path="/auth" component={asynAuth}/>
+    <Route path="/auth" render={() => <Auth />}/>
     <Route exact path="/" component={BurgerBuilder}/>
     <Redirect to="/"/>
     </Switch>
@@ -47,10 +47,10 @@ const App = (props) => {
 
    routes = (
      <Switch>
-       <Route path="/checkout" component={asynCheckout}/>
-       <Route path="/orders" component={asynOrder}/>
+       <Route path="/checkout" render={()=><Checkout/>}/>
+       <Route path="/orders" render={()=><Order/>}/>
        <Route path="/logout" component={Logout}/>
-       <Route path="/auth" component={asynAuth}/>
+       <Route path="/auth" render={()=><Auth/>}/>
        <Route exact path="/" component={BurgerBuilder}/> 
        <Redirect to="/"/>   
      </Switch>
@@ -59,14 +59,13 @@ const App = (props) => {
 
   return ( 
     <Layout> 
-      {routes}
+      <Suspense fallback={<p>Loading.....</p>}>
+        {routes}
+      </Suspense>
     </Layout>
    );
 }
  
-
-
-
 
 const mapStateToProps = (state) => {
   return {
