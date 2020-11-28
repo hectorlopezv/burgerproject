@@ -8,7 +8,7 @@ import instance_orders from '../../../axios-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import {withRouter, RouteComponentProps} from 'react-router-dom';
 import Input from '../../../components/UI/Input/Input';
-import {connect} from 'react-redux';
+import {connect, useSelector, useDispatch} from 'react-redux';
 import withErrorHandler from '../../../hoc/withErrorHandler/WithErrorHandler';
 import {purchaseBurgerStart, purchaseBurger} from '../../../store/actions/order';
 import {checkValidity} from '../../../shared/utility';
@@ -119,6 +119,29 @@ const x :ArrStr ={
 const ContactData: React.FunctionComponent<IContactDataProps&RouteComponentProps> = (props) => {
   const [ContactData, setContactData] = useState({...x});
   const [FormIsValid, setFormIsValid] = useState(false);
+  const dispatch = useDispatch();
+
+  const onOrderBurger = (orderData:any, token:any) =>  dispatch(purchaseBurger(orderData, token));
+
+  const ings = useSelector((stateCurrent:any)=>{
+    return  stateCurrent.burgerBuilder.ingridients;
+  });
+  const price = useSelector((stateCurrent:any)=>{
+    return stateCurrent.burgerBuilder.price;
+  });
+
+  const loading = useSelector((stateCurrent:any)=>{
+    return stateCurrent.order.loading;
+  });
+
+  const token = useSelector((stateCurrent:any)=>{
+    return stateCurrent.auth.token;
+  });
+
+  const userId = useSelector((stateCurrent:any) => {
+    return stateCurrent.auth.userId;
+  })
+
 
   const orderHandler = (event:any) => {
     event.preventDefault();
@@ -130,15 +153,14 @@ const ContactData: React.FunctionComponent<IContactDataProps&RouteComponentProps
         formData[formElementIdentifier] = ContactData.orderForm[formElementIdentifier].value;
       }
 
-
       const order_resume = {
-          ingridients: props.ings,
-          price: props.price,
+          ingridients: ings,
+          price: price,
           orderData: formData,
-          userId:props.userId
+          userId:userId
       }
 
-      props.onOrderBurger(order_resume, props.token);
+      onOrderBurger(order_resume, token);
   }
 
 
@@ -152,12 +174,10 @@ const ContactData: React.FunctionComponent<IContactDataProps&RouteComponentProps
     
     updatedOrderForm[inputIdentifier] =  updatedFormElement;
 
-
     let formIsValid = true;
     //check all elements and if all valid property form its good to go
     for (let inputIndetifier in updatedOrderForm){
         formIsValid =  updatedOrderForm[inputIndetifier].valid && formIsValid;
-
     }
 
     setContactData((prevState:any)=>{
@@ -194,7 +214,7 @@ const ContactData: React.FunctionComponent<IContactDataProps&RouteComponentProps
     <Button btnType="Success" disabled={!FormIsValid} >ORDER</Button>
   </form>);
 
-  if (props.loading){
+  if (loading){
     form = <Spinner/>
   }
 
@@ -209,22 +229,4 @@ const ContactData: React.FunctionComponent<IContactDataProps&RouteComponentProps
 
 
 
-const mapStateToProps = (state:any) => {
-    return {
-      ings: state.burgerBuilder.ingridients,
-      price: state.burgerBuilder.totalPrice,
-      loading: state.order.loading,
-      token: state.auth.token,
-      userId: state.auth.userId
-    }
-}
-
-const mapDispatchToProps = (dispatch:any) => {
-
-  return {
-    onOrderBurger: (orderData:any, token:any) =>  dispatch(purchaseBurger(orderData, token))
-  }
-  
-}
-
-export default  connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(withRouter(ContactData), instance_orders));
+export default  withErrorHandler(withRouter(ContactData), instance_orders);

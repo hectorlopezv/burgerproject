@@ -85,7 +85,7 @@ const BurgerBuilder: React.FunctionComponent<IBurgerBuilderProps & RouteComponen
 
     //functions are created always when executed
     const onIngredientAdded =  (ingName:any) => dispatch(addIngridient(ingName));
-    const onInitIngredient = useCallback( () => dispatch(initIngridients()), []);
+    const onInitIngredient = useCallback( () => dispatch(initIngridients()), [dispatch]);
     const onIngredientRemoved= (ingName:any) => dispatch(removeIngridient(ingName));
     const onInitPurchase = () => dispatch(purchaseInit());
     const onSetAuthRedirectPath= (path:any) => dispatch(setAuthRedirectPath(path));

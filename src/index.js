@@ -29,6 +29,8 @@ export const rootReducer = combineReducers({
   auth: authReducer
   }
   );
+
+  
 const composeEnchancers = composeWithDevTools({
   trace: true,
   traceLimit: 25

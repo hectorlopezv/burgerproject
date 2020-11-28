@@ -1,48 +1,56 @@
-import React, { Component, useEffect } from 'react'
+import React, { Component, useEffect, useCallback } from 'react'
 import Order from '../../components/Order/Order';
 import instance from '../../axios-orders';
 import withErrorHandler from '../../hoc/withErrorHandler/WithErrorHandler';
 import {fetchOrders} from '../../store/actions/order';
-import {connect} from 'react-redux';
+import {connect, useSelector, useDispatch} from 'react-redux';
 import Spinner from '../../components/UI/Spinner/Spinner';
 
 const Orders = (props) => {
-    const {onFetchOrders, token, userId} = props;
+ 
+    const dispatch = useDispatch();
+    const onFetchOrders = useCallback((token, userId) => dispatch(fetchOrders(token, userId)), [dispatch]);
+
+    
+    const orders = useSelector((stateCurrent)=> {
+        return stateCurrent.order.orders;
+    });
+
+    const loading = useSelector((stateCurrent)=>{
+        return stateCurrent.order.loading;
+    });
+
+    const token = useSelector((stateCurrent)=>{
+        return stateCurrent.auth.token;
+    });
+
+    const userId = useSelector((stateCurrent)=>{
+        return stateCurrent.auth.userId;
+    })
+
     useEffect(() =>{
         onFetchOrders(token, userId);
     }, [onFetchOrders, token, userId]);
 
-    let orders = <Spinner/>;
-    if(!props.loading) {
-        orders= (
-            props.orders.map((order) => { 
+    let orders_= <Spinner/>;
+    if(!loading) {
+        orders_ = (
+            orders.map((order_) => { 
             return <Order 
-                ingridients={order.ingridients}
-                key={order.id}
-                price={order.price}
+                ingridients={order_.ingridients}
+                key={order_.id}
+                price={order_.price}
                  />
         }))
     }
     return (
         <div>
-                {orders}
+                {orders_}
         </div>
     );
 }
 
-const mapStateToProps = (state) => {
-    return {
-        orders: state.order.orders,
-        loading: state.order.loading,
-        token: state.auth.token,
-        userId: state.auth.userId
-    }
-}
-const mapDispatchToProps = dispatch => {
-    return {
-        onFetchOrders : (token, userId) => dispatch(fetchOrders(token, userId))
-    }
-}
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Orders, instance))
+
+export default withErrorHandler(Orders, instance);

@@ -1,8 +1,8 @@
-import React , { Component, useState, useEffect} from 'react';
+import React , { Component, useState, useEffect, useCallback} from 'react';
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
 import classes from './Auth.module.css';
-import {connect} from 'react-redux';
+import {connect, useSelector, useDispatch} from 'react-redux';
 import * as actions from '../../store/actions/auth';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import { Redirect} from 'react-router-dom';
@@ -63,8 +63,34 @@ const Auth: React.FunctionComponent< AuthProps> = (props) => {
 
     const [AuthState, setAuthState] = useState({..._state});
     const [IsSignUp, setIsSignUp] = useState(false);
-    const {onSetAuthRedirectPath, authRedirectPath, buildingBurger} = props;
+
+    const dispatch = useDispatch();
+
+    const onAuth = (email:any, password:any, siging:any) => dispatch(actions.auth(email, password, siging));
+    const onSetAuthRedirectPath =  useCallback(() => dispatch(actions.setAuthRedirectPath('/checkout')), [dispatch]);
+
     
+    const loading = useSelector((stateCurrent:any) => {
+        return stateCurrent.auth.loading;
+    });
+
+    const error = useSelector((stateCurrent:any) => {
+        return stateCurrent.auth.error;
+    });
+
+    const isAuthenticated = useSelector((stateCurrent:any) => {
+        return stateCurrent.auth.token !== null;
+    });
+
+    const buildingBurger = useSelector((stateCurrent:any) => {
+        return stateCurrent.burgerBuilder.building;
+    });
+
+    const authRedirectPath = useSelector((stateCurrent:any) =>{
+        return stateCurrent.auth.authRedirectPath;
+    });
+
+
     useEffect(()=> {
         if(buildingBurger && authRedirectPath){
             onSetAuthRedirectPath();
@@ -80,7 +106,7 @@ const Auth: React.FunctionComponent< AuthProps> = (props) => {
     
     const submitHandler = (event:any) => {
         event.preventDefault();
-        props.onAuth(AuthState.controls.email.value, AuthState.controls.password.value, IsSignUp);
+        onAuth(AuthState.controls.email.value, AuthState.controls.password.value, IsSignUp);
       }
     
     const inputChangedHandler = (event:any, controlName:any) => {
@@ -97,9 +123,9 @@ const Auth: React.FunctionComponent< AuthProps> = (props) => {
       }
 
     let authRedirect = null;
-    if(props.isAuthenticated){
-        console.log('esto es el redirect', props.authRedirectPath);
-        return <Redirect to={props.authRedirectPath}/>
+    if(isAuthenticated){
+        console.log('esto es el redirect', authRedirectPath);
+        return <Redirect to={authRedirectPath}/>
     }
     const formElementsArray = [];
     for (let key in AuthState.controls){
@@ -121,13 +147,13 @@ const Auth: React.FunctionComponent< AuthProps> = (props) => {
         />
     });
 
-    if(props.loading) {
+    if(loading) {
         form = <Spinner/>;
     }
     let errorMessage = null;
 
-    if (props.error){
-        errorMessage = <p>{props.error.message}</p>
+    if (error){
+        errorMessage = <p>{error.message}</p>
     }
 
     return (
@@ -155,24 +181,6 @@ const Auth: React.FunctionComponent< AuthProps> = (props) => {
 };
 
 
-const mapStateToProps = (state:any) => {
-    return{
-
-        loading: state.auth.loading,
-        error: state.auth.error,
-        isAuthenticated: state.auth.token !== null,
-        buildingBurger: state.burgerBuilder.building,
-        authRedirectPath: state.auth.authRedirectPath
-    }
-    
-}
-
-const mapDispatchToProps = (dispatch:any) => {
-    return  {
-        onAuth: (email:any, password:any, siging:any) => dispatch(actions.auth(email, password, siging)),
-        onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/checkout'))
-    }
-}
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Auth);
+export default Auth;
