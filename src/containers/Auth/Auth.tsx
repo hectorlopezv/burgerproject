@@ -63,13 +63,15 @@ const Auth: React.FunctionComponent< AuthProps> = (props) => {
 
     const [AuthState, setAuthState] = useState({..._state});
     const [IsSignUp, setIsSignUp] = useState(false);
-
+    const {onSetAuthRedirectPath, authRedirectPath, buildingBurger} = props;
+    
     useEffect(()=> {
-        if(props.buildingBurger && props.authRedirectPath){
-            props.onSetAuthRedirectPath();
+        if(buildingBurger && authRedirectPath){
+            onSetAuthRedirectPath();
           }
-    }, []);
-
+    }, [onSetAuthRedirectPath, authRedirectPath, buildingBurger]);
+    //update only if onSetAuthRedirectPath, authRedirectPath, buildingBurger
+    
     const switchAuthModelHandler = () =>  {
         setIsSignUp((prevState)=> {
             return !prevState;

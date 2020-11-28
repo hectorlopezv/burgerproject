@@ -9,10 +9,10 @@ interface ILogoutProps {
 }
 
 const Logout: React.FunctionComponent<ILogoutProps> = (props) => {
-
+    const {onLogout} = props;
     useEffect(() =>{
-        props.onLogout();
-    }, []);
+        onLogout();
+    }, [onLogout]);
 
     return (
         <Redirect to="/"/>

@@ -64,9 +64,10 @@ interface State {
 const BurgerBuilder: React.FunctionComponent<IBurgerBuilderProps & RouteComponentProps & State> = (props) => {
     
     const [Purchasing, setPurchasing] = useState(false);
+    const {onInitIngredient} = props;
     useEffect(() => {
-        props.onInitIngredient()
-    }, [])
+        onInitIngredient()
+    }, [onInitIngredient])
 
     const purchaseHandler = () => {
         

@@ -30,10 +30,11 @@ const Auth = React.lazy(()=>{
 });
 
 const App = (props) => {
+  const {onTryAutoSignup} = props;
   useEffect(() => {
-    props.onTryAutoSignup()
+    onTryAutoSignup();
     console.log('entro');
-  }, [])
+  }, [onTryAutoSignup])//run if function changes.. a function definition can change , or where is defined
 
   let routes = (
     <Switch>
